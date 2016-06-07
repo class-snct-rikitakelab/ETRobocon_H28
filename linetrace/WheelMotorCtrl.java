@@ -26,11 +26,12 @@ public class WheelMotorCtrl {
 		float[] gyrovalue = new float [Hardware.gyro.sampleSize()];
 		Hardware.gyro.fetchSample(gyrovalue, 0);
 
-		Balancer.Balancer.control(forward, turn, gyrovalue[0], 0, Hardware.motorPortL.getTachoCount(), Hardware.motorPortR.getTachoCount(), Battery.getVoltageMilliVolt());
+		Balancer.Balancer.control(forward, turn, gyrovalue[0], 0.0F, Hardware.motorPortL.getTachoCount(), Hardware.motorPortR.getTachoCount(), Battery.getVoltageMilliVolt());
 
 		Hardware.motorPortL.controlMotor(Balancer.Balancer.getPwmL(), 1);
 		Hardware.motorPortR.controlMotor(Balancer.Balancer.getPwmR(), 1);
 
 	}
+
 
 }
