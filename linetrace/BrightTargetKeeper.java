@@ -3,9 +3,9 @@ package linetrace
 
 public class BrightTargetKeeper {
 
-	private float White = ;
+	private float White = 0.36F;
 
-	private float Black;
+	private float Black = 0.02F;
 
 	private float Gray;
 
