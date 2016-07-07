@@ -34,4 +34,35 @@ public class Hardware {
     public static EV3GyroSensor gyro = new EV3GyroSensor(SensorPort.S4);
     public static SampleProvider rate = gyro.getRateMode();
 
+    private static float[] sampleBright = new float[redMode.sampleSize()];
+	private static float[] sampleSonor = new float[distanceMode.sampleSize()];
+	private static float[] sampleGyro = new float[rate.sampleSize()];
+
+	public static float getBrightness() {
+		// TODO 自動生成されたメソッド・スタブ
+
+		redMode.fetchSample(sampleBright, 0);
+
+		return sampleBright[0];
+	}
+
+	public static float getSonarDistance() {
+		// TODO 自動生成されたメソッド・スタブ
+
+		distanceMode.fetchSample(sampleSonor , 0);
+
+		return sampleSonor[0];
+
+	}
+
+	public static float getGyroValue() {
+
+		rate.fetchSample(sampleGyro , 0);
+
+		return sampleGyro[0];
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+
 }

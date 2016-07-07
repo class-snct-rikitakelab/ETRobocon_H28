@@ -1,4 +1,4 @@
-package jp.etrobo.ev3.sample;
+package linetrace;
 
 import java.io.DataInputStream;
 import java.io.IOException;

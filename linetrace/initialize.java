@@ -1,7 +1,7 @@
-package jp.etrobo.ev3.sample;
+package linetrace;
 
+import Balancer.Balancer;
 import hardware.Hardware;
-import jp.etrobo.ev3.balancer.Balancer;
 import lejos.hardware.Battery;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.port.BasicMotorPort;
@@ -13,7 +13,7 @@ public class initialize {
      */
 	static void init(){
 		LCD.drawString("Please Wait...  ", 0, 4);
-		//Hardware.gyro.reset();
+		Hardware.gyro.reset();
 	    Hardware.sonar.enable();
 	    Hardware.motorPortL.setPWMMode(BasicMotorPort.PWM_BRAKE);
 	    Hardware.motorPortR.setPWMMode(BasicMotorPort.PWM_BRAKE);
