@@ -3,12 +3,11 @@ package linetrace;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import ev3Viewer.LogSender;
 import lejos.utility.Delay;
 
 public class TestLineTrace {
 
-	private static LogSender sender = new LogSender();
+	//private static LogSender sender = new LogSender();
 	private static long time4ms;
 	private static long starttime;
 
