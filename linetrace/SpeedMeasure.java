@@ -1,3 +1,5 @@
+package linetrace;
+
 import hardware.Hardware;
 
 public class SpeedMeasure {
@@ -9,7 +11,6 @@ public class SpeedMeasure {
 	private long oldmilliSec;
 
 	public SpeedMeasure(){
-		hardware = new Hardware();
 		oldTachoL = oldTachoR = 0;
 		oldmilliSec = System.currentTimeMillis();
 	}
@@ -20,13 +21,13 @@ public class SpeedMeasure {
 		int tachoR;
 		long milliSec;
 		int dTacho;
-		
+
 		tachoL = hardware.motorPortL.getTachoCount();
 		tachoR = hardware.motorPortR.getTachoCount();
 		milliSec = System.currentTimeMillis();
-		
+
 		dTacho = ((tachoL-oldTachoL)+(tachoR-oldTachoR))/2;
-		speed = dTacho/(milliSec-oldmilliSec);
+		speed = (float)dTacho/(float)((int)milliSec-(int)oldmilliSec);
 
 		oldTachoL = tachoL;
 		oldTachoR = tachoR;

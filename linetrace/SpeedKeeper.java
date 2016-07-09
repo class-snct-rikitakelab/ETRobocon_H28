@@ -1,6 +1,8 @@
+package linetrace;
+
 public class SpeedKeeper {
 
-	private float spTarget;
+	private static float spTarget;
 
 	public void setTarget(float target) {
 		spTarget = target;
