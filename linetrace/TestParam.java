@@ -50,18 +50,21 @@ public class TestParam {
 			public void run(){
 				tail.tailTwo();
 
-				forward += fc.caldelForward();
-				float turn = 0.0F;
+				//forward += fc.caldelForward();
+
+				forward = 70.0F;
+				float turn = tc.calcTurn();
 
 				wmc.setForward(forward);
 				wmc.setTurn(turn);
 
 				wmc.controlWheel();
 
+				/*
 				if(++count > 20){
 					float time = (System.nanoTime()-starttime)/1000000;
 					ls.addLog("hoge", 0, time);
-				}
+				}*/
 			}
 		};
 
@@ -70,6 +73,8 @@ public class TestParam {
 		while(true){
 
 			if(Hardware.touchSensorIsPressed() == true){
+				Hardware.motorPortL.controlMotor(0, 0);
+				Hardware.motorPortR.controlMotor(0, 0);
 				driveTimer.cancel();
 				ls.send();
 				break;
