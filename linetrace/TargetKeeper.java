@@ -2,13 +2,13 @@ package linetrace;
 
 public class TargetKeeper {
 
-	private float bright_white; //��
+	private static float bright_white; //��
 
-	private float bright_black; //��
+	private static float bright_black; //��
 
-	private float bright_gray; //�D�F
+	private static float bright_gray; //�D�F
 
-	private float bright_figure; //�K�i
+	private static float bright_figure; //�K�i
 
 	public void setBrightWhite(float brightness) {
 		bright_white = brightness;

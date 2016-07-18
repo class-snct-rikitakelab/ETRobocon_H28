@@ -4,7 +4,7 @@ import hardware.Hardware;
 
 public class tailCtrl {
 
-    private static final int   TAIL_ANGLE_STAND_UP  = 90;   // 完全停止時の角度[度]
+    private static final int   TAIL_ANGLE_STAND_UP  = 92;   // 完全停止時の角度[度]
     private static final int   TAIL_ANGLE_DRIVE     = 3;    // バランス走行時の角度[度]
     private static final float P_GAIN               = 2.5F; // 完全停止用モータ制御比例係数
     private static final int   PWM_ABS_MAX          = 60;   // 完全停止用モータ制御PWM絶対最大値
