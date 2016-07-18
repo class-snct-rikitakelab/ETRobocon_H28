@@ -37,6 +37,7 @@ public class Hardware {
     private static float[] sampleBright = new float[redMode.sampleSize()];
 	private static float[] sampleSonor = new float[distanceMode.sampleSize()];
 	private static float[] sampleGyro = new float[rate.sampleSize()];
+	private static float[] sampleTouch = new float[touch.sampleSize()];
 
 	public static float getBrightness() {
 		// TODO 自動生成されたメソッド・スタブ
@@ -63,6 +64,11 @@ public class Hardware {
 		// TODO 自動生成されたメソッド・スタブ
 
 	}
+
+    public static boolean touchSensorIsPressed() {
+        touchMode.fetchSample(sampleTouch , 0);
+        return ((int)sampleTouch[0] != 0);
+    }
 
 
 }
