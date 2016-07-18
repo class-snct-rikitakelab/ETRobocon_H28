@@ -3,13 +3,13 @@ package linetrace
 
 public class BrightTargetKeeper {
 
-	private float White = 0.36F;
+	private static float White = 0.36F;
 
-	private float Black = 0.02F;
+	private static float Black = 0.02F;
 
-	private float Gray;
+	private static float Gray;
 
-	private float Step;
+	private static float Step;
 
 	public void setWhite(float white) {
 

@@ -69,4 +69,5 @@ public class Hardware {
         touchMode.fetchSample(sampleTouch, 0);
         return ((int)sampleTouch[0] != 0);
     }
+
 }

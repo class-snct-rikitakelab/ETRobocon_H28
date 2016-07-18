@@ -5,7 +5,7 @@ public class TurnCalc {
 	private BrightMeasure bm;
 	private BrightTargetKeeper btk;
 
-	static float P = -100.0F;
+	static float P = -250.0F;
 	static float I = 0.0F;
 	static float D = 0.0F;
 	static float DELTA = 0.004F;

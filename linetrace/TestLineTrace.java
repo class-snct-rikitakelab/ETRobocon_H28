@@ -3,6 +3,8 @@ package linetrace;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import hardware.Hardware;
+import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 public class TestLineTrace {
@@ -19,6 +21,8 @@ public class TestLineTrace {
 
 
 		initializer.init();
+
+		calibration();
 
 		int count = 0;
 
@@ -41,8 +45,8 @@ public class TestLineTrace {
 			public void run(){
 				tail.tailTwo();
 
-				forward += fc.caldelForward();
-				float turn = 0.0F;
+				forward = 70.0F;
+				float turn = tc.calcTurn();
 
 				wmc.setForward(forward);
 				wmc.setTurn(turn);
@@ -52,8 +56,71 @@ public class TestLineTrace {
 		};
 
 		driveTimer.scheduleAtFixedRate(driveTask, 0, 4);
+	}
 
+	//黒と白と階段の輝度値を取得して記録しておく
+	private static void calibration(){
+		BrightTargetKeeper tk = new BrightTargetKeeper();
+		BrightMeasure bright = new BrightMeasure();
 
+		boolean flag = false;
+
+		LCD.drawString("Detect BLACK", 0, 0);
+		while(true){
+			if(Hardware.touchSensorIsPressed() == true){
+				flag = true;
+			}else{
+				if(flag == true){
+					break;
+				}
+			}
+			Delay.msDelay(100);
+		}
+		tk.setBlack(bright.measureBrightness());
+		LCD.clear();
+		flag = false;
+
+		LCD.drawString("Detect WHITE", 0, 0);
+		while(true){
+			if(Hardware.touchSensorIsPressed() == true){
+				flag =true;
+			}else{
+				if(flag == true){
+					break;
+				}
+			}
+			Delay.msDelay(100);
+		}
+		tk.setWhite(bright.measureBrightness());
+		LCD.clear();
+		flag = false;
+
+		LCD.drawString("Detect GRAY", 0, 0);
+		while(true){
+			if(Hardware.touchSensorIsPressed() == true){
+				flag = true;
+			}else{
+				if(flag == true){
+					break;
+				}
+			}
+		}
+		tk.setGray(bright.measureBrightness());
+		LCD.clear();
+		flag = false;
+
+		LCD.drawString("Detect KAIDAN", 0, 0);
+		while(flag == false){
+			if(Hardware.touchSensorIsPressed() == true){
+				flag = true;
+			}else{
+				if(flag == true){
+					break;
+				}
+			}
+		}
+		tk.setStep(bright.measureBrightness());
+		LCD.clear();
 	}
 
 
