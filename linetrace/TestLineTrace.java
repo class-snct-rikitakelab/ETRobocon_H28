@@ -65,6 +65,7 @@ public class TestLineTrace {
 
 		boolean flag = false;
 
+		LCD.clear();
 		LCD.drawString("Detect BLACK", 0, 0);
 		while(true){
 			if(Hardware.touchSensorIsPressed() == true){

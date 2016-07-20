@@ -10,6 +10,8 @@ public class TurnCalc {
 	static float D = 0.0F;
 	static float DELTA = 0.004F;
 
+	public float bright = 0.0F;
+
 	float currentDiff;
 	float prevDiff;
 	float integral = 0.0F;
@@ -24,7 +26,7 @@ public class TurnCalc {
 
 	public float calcTurn() {
 
-		float bright = bm.measureBrightness();
+		bright = bm.measureBrightness();
 
 		currentDiff = bright - btk.getTarget();
 
