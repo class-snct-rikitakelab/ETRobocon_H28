@@ -5,9 +5,9 @@ public class TurnCalc {
 	private BrightMeasure bm;
 	private BrightTargetKeeper btk;
 
-	static float P = -250.0F;
-	static float I = 0.0F;
-	static float D = 0.0F;
+	static float P = -150.0F;
+	static float I = -0.0F;
+	static float D = -50.0F;
 	static float DELTA = 0.004F;
 
 	float currentDiff;
@@ -30,11 +30,16 @@ public class TurnCalc {
 
 		float turn = P*currentDiff;
 
-		turn += D*(currentDiff - prevDiff) / DELTA;
+		turn += D*(currentDiff - prevDiff);
+		prevDiff = currentDiff;
 
-		integral += I * ((currentDiff + prevDiff) / 2.0F) *DELTA;
+		integral += I * ((currentDiff + prevDiff) / 2.0F);
 
-		turn += integral;
+		//turn += D*(currentDiff - prevDiff) / DELTA;
+
+		//integral += I * ((currentDiff + prevDiff) / 2.0F) *DELTA;
+
+		//turn += integral;
 
 		return turn;
 	}
