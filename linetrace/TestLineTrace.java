@@ -19,6 +19,9 @@ public class TestLineTrace {
 		final initialize initializer = new initialize();
 		final ForwardCalculator fc = new ForwardCalculator();
 
+		ParamKeeper.setP(-150.0F);
+		ParamKeeper.setI(0.0F);
+		ParamKeeper.setD(-30.0F);
 
 		initializer.init();
 
