@@ -5,10 +5,7 @@ public class TurnCalc {
 	private BrightMeasure bm;
 	private BrightTargetKeeper btk;
 
-	static float P = -150.0F;
-	static float I = -0.0F;
-	static float D = -50.0F;
-	static float DELTA = 0.004F;
+	private ParamKeeper pk;
 
 	public float bright = 0.0F;
 
@@ -19,6 +16,7 @@ public class TurnCalc {
 	TurnCalc(){
 		bm = new BrightMeasure();
 		btk = new BrightTargetKeeper();
+		pk = new ParamKeeper();
 
 		currentDiff = bm.measureBrightness() - btk.getTarget();
 		prevDiff = currentDiff;
@@ -30,12 +28,12 @@ public class TurnCalc {
 
 		currentDiff = bright - btk.getTarget();
 
-		float turn = P*currentDiff;
+		float turn = pk.getP()*currentDiff;
 
-		turn += D*(currentDiff - prevDiff);
+		turn += pk.getD()*(currentDiff - prevDiff);
 		prevDiff = currentDiff;
 
-		integral += I * ((currentDiff + prevDiff) / 2.0F);
+		integral += pk.getI() * ((currentDiff + prevDiff) / 2.0F);
 
 		//turn += D*(currentDiff - prevDiff) / DELTA;
 

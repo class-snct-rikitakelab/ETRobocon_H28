@@ -3,6 +3,7 @@ package linetrace;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import Balancer.Balancer;
 import hardware.Hardware;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
@@ -18,10 +19,15 @@ public class TestLineTrace {
 		final tailCtrl tail = new tailCtrl();
 		final initialize initializer = new initialize();
 		final ForwardCalculator fc = new ForwardCalculator();
+		final SpeedSelecter speedselect = new SpeedSelecter();
+		//DistanceMeasure dm = new DistanceMeasure();
 
+		ParamKeeper.setP(-100.0F);
+		ParamKeeper.setI(0.0F);
+		ParamKeeper.setD(0.0F);
 
 		initializer.init();
-
+		
 		calibration();
 
 		int count = 0;
@@ -41,11 +47,12 @@ public class TestLineTrace {
 		Timer driveTimer = new Timer();
 		TimerTask driveTask = new TimerTask(){
 			float forward = 0.0F;
+			int count = 0;
 
 			public void run(){
 				tail.tailTwo();
 
-				forward = 70.0F;
+				forward = speedselect.getSpeedtarget();
 				float turn = tc.calcTurn();
 
 				wmc.setForward(forward);
@@ -56,6 +63,7 @@ public class TestLineTrace {
 		};
 
 		driveTimer.scheduleAtFixedRate(driveTask, 0, 4);
+
 	}
 
 	//黒と白と階段の輝度値を取得して記録しておく
