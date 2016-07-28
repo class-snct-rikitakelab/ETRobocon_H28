@@ -19,6 +19,11 @@ public class TestParam {
 		final tailCtrl tail = new tailCtrl();
 		final initialize initializer = new initialize();
 		final ForwardCalculator fc = new ForwardCalculator();
+		final SpeedSelecter ss = new SpeedSelecter();
+
+		ParamKeeper.setD(30.0F);
+		ParamKeeper.setI(0.0F);
+		ParamKeeper.setP(-110.0F);
 
 		final LogSender ls = new LogSender();
 
@@ -32,7 +37,7 @@ public class TestParam {
 
 			Sound.beep();
 
-			ls.connect();
+			//ls.connect();
 
 			while(true){
 				count ++;
@@ -57,36 +62,26 @@ public class TestParam {
 
 					//forward += fc.caldelForward();
 
-					forward = 70.0F;
+					forward = ss.getSpeedtarget();
 					float turn = tc.calcTurn();
+					//forward = 70.0F;
 
 					wmc.setForward(forward);
 					wmc.setTurn(turn);
 
 					wmc.controlWheel();
 
-
+/*
 					if(++count > 50){
 						float time = (System.nanoTime()-starttime)/1000000;
 						ls.addLog("bright", tc.bright, time);
 						count = 0;
 					}
+					*/
 				}
 			};
 
 			driveTimer.scheduleAtFixedRate(driveTask, 0, 4);
-
-			while(true){
-
-				if(Hardware.touchSensorIsPressed() == true){
-					driveTimer.cancel();
-					Hardware.motorPortL.controlMotor(0, 0);
-					Hardware.motorPortR.controlMotor(0, 0);
-					ls.send();
-					break;
-				}
-				Delay.msDelay(500);
-			}
 
 			boolean flag = false;
 
@@ -95,12 +90,15 @@ public class TestParam {
 					flag = true;
 				}else{
 					if(flag == true){
+						driveTimer.cancel();
+						Hardware.motorPortL.controlMotor(0, 0);
+						Hardware.motorPortR.controlMotor(0, 0);
+						//ls.send();
 						break;
 					}
 				}
 				Delay.msDelay(100);
 			}
-
 			initializer.reset();
 			ls.clear();
 			ls.disconnect();

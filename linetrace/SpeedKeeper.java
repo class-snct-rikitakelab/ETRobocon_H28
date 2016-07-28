@@ -4,7 +4,7 @@ public class SpeedKeeper {
 
 	private static float spTarget;
 
-	private static float forwardTargets[] = {100.0F,30.0F,100.0F,30.0F,100.0F,30.0F,100.0F};
+	private static float forwardTargets[] = {70.0F,30.0F,70.0F,30.0F,70.0F,30.0F,70.0F,70.0F,70.0F,70.0F};
 
 	public void setTarget(float target) {
 		spTarget = target;
