@@ -93,19 +93,17 @@ public class TestParam {
 						driveTimer.cancel();
 						Hardware.motorPortL.controlMotor(0, 0);
 						Hardware.motorPortR.controlMotor(0, 0);
-						//ls.send();
 						break;
 					}
 				}
-				Delay.msDelay(100);
+
 			}
+
 			initializer.reset();
 			ls.clear();
 			ls.disconnect();
 
 		}
-
-
 	}
 
 	//黒と白と階段の輝度値を取得して記録しておく
