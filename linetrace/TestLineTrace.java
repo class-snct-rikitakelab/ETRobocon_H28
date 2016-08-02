@@ -3,12 +3,13 @@ package linetrace;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import Balancer.Balancer;
 import hardware.Hardware;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 public class TestLineTrace {
+
+	public static int START_COMMAND = 71;
 
 
 	public static void main(String[] args) {
@@ -20,6 +21,7 @@ public class TestLineTrace {
 		final initialize initializer = new initialize();
 		final ForwardCalculator fc = new ForwardCalculator();
 		final SpeedSelecter speedselect = new SpeedSelecter();
+		final establish esta = new establish();
 		//DistanceMeasure dm = new DistanceMeasure();
 
 		ParamKeeper.setP(-100.0F);
@@ -27,22 +29,36 @@ public class TestLineTrace {
 		ParamKeeper.setD(0.0F);
 
 		initializer.init();
-		
+
 		calibration();
 
-		int count = 0;
+		Timer CommandTimer = new Timer();
+		TimerTask CommandTask = new TimerTask(){
+
+			public void run(){
+				esta.esta();
+			}
+		};
+
+		boolean flag = false;
+		CommandTimer.schedule(CommandTask, 0, 20);
 
 		while(true){
-			count ++;
+
+			if(Hardware.touchSensorIsPressed() == true){
+				flag = true;
+			}
+
+			if(esta.checkRemoteCommand(START_COMMAND) == true || flag == true){
+				break;
+			}
 
 			tail.tailThree();
 
 			Delay.msDelay(20);
-
-			if(count == 500){
-				break;
-			}
 		}
+
+		CommandTimer.cancel();
 
 		Timer driveTimer = new Timer();
 		TimerTask driveTask = new TimerTask(){
