@@ -62,4 +62,14 @@ public class establish {
             try { server.close(); } catch (IOException ex) {}
         }
     }
+
+    public static void reset(){
+    	remoteCommand = 0;
+    	server = null;
+    	inputStream = null;
+    	dataInputStream = null;
+    	client = null;
+
+
+    }
 }

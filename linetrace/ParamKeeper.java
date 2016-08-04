@@ -2,9 +2,9 @@ package linetrace;
 
 public class ParamKeeper {
 
-	static float P = 0.0F;
-	static float I = 0.0F;
-	static float D = 0.0F;
+	private static float P = 0.0F;
+	private static float I = 0.0F;
+	private static float D = 0.0F;
 
 	static void setP(float p){
 		P = p;
