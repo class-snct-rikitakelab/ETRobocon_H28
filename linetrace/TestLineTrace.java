@@ -3,12 +3,14 @@ package linetrace;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import Balancer.Balancer;
 import hardware.Hardware;
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 public class TestLineTrace {
+
+	public static int START_COMMAND = 71;
 
 
 	public static void main(String[] args) {
@@ -19,50 +21,85 @@ public class TestLineTrace {
 		final tailCtrl tail = new tailCtrl();
 		final initialize initializer = new initialize();
 		final ForwardCalculator fc = new ForwardCalculator();
-		final SpeedSelecter speedselect = new SpeedSelecter();
-		//DistanceMeasure dm = new DistanceMeasure();
-
-		ParamKeeper.setP(-100.0F);
-		ParamKeeper.setI(0.0F);
-		ParamKeeper.setD(0.0F);
+		final AreaParamSelecter aps = new AreaParamSelecter();
+		final SpeedKeeper sk = new SpeedKeeper();
+		final establish esta = new establish();
 
 		initializer.init();
-		
+
 		calibration();
 
-		int count = 0;
+		Timer CommandTimer = new Timer();
+		TimerTask CommandTask = new TimerTask(){
+
+			public void run(){
+				esta.esta();
+			}
+		};
+
+		Sound.beep();
+
+		boolean flag = false;
+		//CommandTimer.schedule(CommandTask, 0, 20);
 
 		while(true){
-			count ++;
+
+
+			if(Hardware.touchSensorIsPressed() == true){
+				flag = true;
+			}
+
+			if(esta.checkRemoteCommand(START_COMMAND))break;
+
+			if(flag == true) break;
 
 			tail.tailThree();
 
 			Delay.msDelay(20);
-
-			if(count == 500){
-				break;
-			}
 		}
+
+		Sound.beep();
+
+		CommandTimer.cancel();
 
 		Timer driveTimer = new Timer();
 		TimerTask driveTask = new TimerTask(){
 			float forward = 0.0F;
 			int count = 0;
+			int lscount = 0;
+			long starttime = System.nanoTime();
 
 			public void run(){
+
+				if(++count > 20){
+					count = 0;
+					aps.setParams();
+				}
+
 				tail.tailTwo();
 
-				forward = speedselect.getSpeedtarget();
+				forward = sk.getTarget();
 				float turn = tc.calcTurn();
 
 				wmc.setForward(forward);
 				wmc.setTurn(turn);
-
 				wmc.controlWheel();
+
 			}
 		};
 
 		driveTimer.scheduleAtFixedRate(driveTask, 0, 4);
+
+		while(true){
+
+			if(Hardware.touchSensorIsPressed() == true){
+				break;
+			}
+
+			Delay.msDelay(20);
+		}
+
+
 
 	}
 
