@@ -1,13 +1,14 @@
 package linetrace;
 
+import hardware.Hardware;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
-import ev3Viewer.LogSender;
-import hardware.Hardware;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
+import ev3Viewer.LogSender;
 
 public class TestParam {
 
@@ -21,6 +22,7 @@ public class TestParam {
 		final ForwardCalculator fc = new ForwardCalculator();
 
 		final LogSender ls = new LogSender();
+		final AreaParamSelecter apk = new AreaParamSelecter();
 
 		initializer.init_test(ls);
 
@@ -56,9 +58,12 @@ public class TestParam {
 					tail.tailTwo();
 
 					//forward += fc.caldelForward();
+					if(count>20){
+						apk.setParams();
+					}
 
-					forward = 70.0F;
-					float turn = tc.calcTurn();
+					forward = apk.sk.getTarget();
+					float turn = -tc.calcTurn();
 
 					wmc.setForward(forward);
 					wmc.setTurn(turn);
@@ -68,7 +73,9 @@ public class TestParam {
 
 					if(++count > 50){
 						float time = (System.nanoTime()-starttime)/1000000;
-						ls.addLog("bright", tc.bright, time);
+						ls.addLog("P", tc.P, time);
+						ls.addLog("I", tc.I, time);
+						ls.addLog("D", tc.D, time);
 						count = 0;
 					}
 				}
