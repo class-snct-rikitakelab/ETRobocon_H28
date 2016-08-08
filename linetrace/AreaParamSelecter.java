@@ -16,15 +16,32 @@ public class AreaParamSelecter {
 
 	// 左から、区間の始まりの距離・区間の終わりの距離・P係数・I係数・D係数・目標速度
 	private AreaParamKeeper areaparams[] ={
-		new AreaParamKeeper(-10.0F,	0.1F,	80.0F,	700.0F,	30.0F,	20.0F),
-		new AreaParamKeeper(0.1F,	2.3F,	80.0F,	700.0F,	30.0F,	120.0F),
-		new AreaParamKeeper(2.3F,	2.9F,	120.0F,	700.0F,	30.0F,	40.0F),
-		new AreaParamKeeper(2.9F,	4.7F,	80.0F,	700.0F,	30.0F,	120.0F),
-		new AreaParamKeeper(4.7F,	5.69F,	180.0F,	700.0F,	30.0F,	40.0F),
-		new AreaParamKeeper(5.7F,	6.922F,	80.0F,	700.0F,	30.0F,	120.0F),
-		new AreaParamKeeper(6.92F,	7.953F,	180.0F,	700.0F,	30.0F,	40.0F),
-		new AreaParamKeeper(7.95F,	8.0F,	80.0F,	700.0F,	30.0F,	50.0F),
-		new AreaParamKeeper(8.0F,	80.0F,	0.0F,	700.0F,	30.0F,	0.0F)
+		/*
+		 * Rコース
+		 */
+		/*
+		new AreaParamKeeper(-10.0F,	0.1F,	60.0F,	30.0F,	15.0F,	40.0F),
+		new AreaParamKeeper(0.1F,	2.3F,	30.0F,	30.0F,	15.0F,	100.0F),
+		new AreaParamKeeper(2.3F,	2.9F,	130.0F,	30.0F,	15.0F,	60.0F),
+		new AreaParamKeeper(2.9F,	4.7F,	30.0F,	30.0F,	15.0F,	100.0F),
+		new AreaParamKeeper(4.7F,	5.8F,	150.0F,	30.0F,	50.0F,	55.0F),
+		new AreaParamKeeper(5.8F,	6.922F,	30.0F,	30.0F,	15.0F,	100.0F),
+		new AreaParamKeeper(6.92F,	7.953F,	160.0F,	30.0F,	15.0F,	60.0F),
+		new AreaParamKeeper(7.95F,	8.0F,	30.0F,	30.0F,	15.0F,	50.0F),
+		new AreaParamKeeper(8.0F,	80.0F,	0.0F,	30.0F,	15.0F,	0.0F)
+		*/
+		/*
+		 * Lコース
+		 */
+		new AreaParamKeeper(-10.0F,	0.1F,	60.0F,	30.0F,	15.0F,	40.0F),
+		new AreaParamKeeper(0.1F,	2.3F,	30.0F,	30.0F,	15.0F,	100.0F),
+		new AreaParamKeeper(2.3F,	3.2F,	150.0F,	30.0F,	30.0F,	50.0F),
+		new AreaParamKeeper(3.2F,	4.4F,	80.0F,	30.0F,	15.0F,	100.0F),
+		new AreaParamKeeper(4.4F,	5.1F,	130.0F,	30.0F,	15.0F,	60.0F),
+		new AreaParamKeeper(5.1F,	6.0F,	50.0F,	30.0F,	15.0F,	100.0F),
+		new AreaParamKeeper(6.0F,	7.5F,	120.0F,	30.0F,	15.0F,	60.0F),
+		new AreaParamKeeper(7.5F,	8.0F,	60.0F,	30.0F,	15.0F,	50.0F),
+		new AreaParamKeeper(8.0F,	80.0F,	0.0F,	30.0F,	15.0F,	0.0F)
 	};
 
 	public void setParams(){

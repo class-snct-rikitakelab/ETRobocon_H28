@@ -36,17 +36,16 @@ public class TurnCalc {
 
 		D = pk.getD();
 		turn += D*(currentDiff - prevDiff)/DELTA_T;
-		prevDiff = currentDiff;
-
+		
 		I = pk.getI();
-		integral +=I * ((currentDiff + prevDiff) / 2.0F);
+		integral +=I * ((currentDiff + prevDiff) / 2.0F)*DELTA_T;
 
 		//turn += D*(currentDiff - prevDiff) / DELTA;
 
 		//integral += I * ((currentDiff + prevDiff) / 2.0F) *DELTA;
 
-		//turn += integral;
-
+		turn += integral;
+		prevDiff = currentDiff;
 		return turn;
 	}
 
