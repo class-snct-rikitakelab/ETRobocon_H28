@@ -7,6 +7,12 @@ import hardware.Hardware;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
+import motor_control.WheelMotorCtrl;
+import motor_control.tailCtrl;
+import turn_calc.BrightMeasure;
+import turn_calc.BrightTargetKeeper;
+import turn_calc.ForwardSelecter;
+import turn_calc.TurnCalc;
 
 public class TestLineTrace {
 
@@ -20,10 +26,8 @@ public class TestLineTrace {
 		final WheelMotorCtrl wmc = new WheelMotorCtrl();
 		final tailCtrl tail = new tailCtrl();
 		final initialize initializer = new initialize();
-		final ForwardCalculator fc = new ForwardCalculator();
-		final AreaParamSelecter aps = new AreaParamSelecter();
-		final SpeedKeeper sk = new SpeedKeeper();
 		final establish esta = new establish();
+		final ForwardSelecter fs = new ForwardSelecter();
 
 		initializer.init();
 
@@ -43,7 +47,6 @@ public class TestLineTrace {
 		//CommandTimer.schedule(CommandTask, 0, 20);
 
 		while(true){
-
 
 			if(Hardware.touchSensorIsPressed() == true){
 				flag = true;
@@ -71,14 +74,10 @@ public class TestLineTrace {
 
 			public void run(){
 
-				if(++count > 20){
-					count = 0;
-					aps.setParams();
-				}
-
 				tail.tailTwo();
 
-				forward = sk.getTarget();
+				forward = fs.SelectForward()
+						;
 				float turn = tc.calcTurn();
 
 				wmc.setForward(forward);
