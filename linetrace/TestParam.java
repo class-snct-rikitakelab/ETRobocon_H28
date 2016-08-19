@@ -23,29 +23,31 @@ public class TestParam {
 
 		final LogSender ls = new LogSender();
 		final AreaParamSelecter apk = new AreaParamSelecter();
+		final StepSolver step = new StepSolver();
+		final GarageSolver garage = new GarageSolver(36, 90, 60);
+		final establish esta = new establish();
 
 		initializer.init_test(ls);
 
 		while(true){
+			int count = 0;
 
 			calibration();
 
-			int count = 0;
-
 			Sound.beep();
 
-			ls.connect();
+			//ls.connect();
 
 			while(true){
 				count ++;
 
 				tail.tailThree();
-
+				esta.esta();
+				if(esta.checkRemoteCommand(71))break;
 				Delay.msDelay(20);
-
-				if(count == 500){
+				/*if(count == 500){
 					break;
-				}
+				}*/
 			}
 
 			Timer driveTimer = new Timer();
@@ -72,10 +74,10 @@ public class TestParam {
 
 
 					if(++count > 50){
-						float time = (System.nanoTime()-starttime)/1000000;
+						/*float time = (System.nanoTime()-starttime)/1000000;
 						ls.addLog("P", tc.P, time);
 						ls.addLog("I", tc.I, time);
-						ls.addLog("D", tc.D, time);
+						ls.addLog("D", tc.D, time);*/
 						count = 0;
 					}
 				}
@@ -83,7 +85,17 @@ public class TestParam {
 
 			driveTimer.scheduleAtFixedRate(driveTask, 0, 4);
 
+			int distc = 0;
 			while(true){
+				if(apk.dis>7.98F/*7.98F*/){
+					if(++distc>10){
+						distc = -99999999;
+						driveTimer.cancel();
+						LCD.drawString("kaidan", 1, 1);
+						step.solveStep();
+						garage.SolveGarage();
+					}
+				}
 
 				if(Hardware.touchSensorIsPressed() == true){
 					driveTimer.cancel();
@@ -92,7 +104,7 @@ public class TestParam {
 					ls.send();
 					break;
 				}
-				Delay.msDelay(500);
+				Delay.msDelay(100);
 			}
 
 			boolean flag = false;
@@ -110,7 +122,7 @@ public class TestParam {
 
 			initializer.reset();
 			ls.clear();
-			ls.disconnect();
+			//ls.disconnect();
 
 		}
 
