@@ -47,7 +47,7 @@ public class BrightTargetKeeper {
 	}
 
 	public float getTarget(){
-		return (float) ((this.White + this.Black) / 2.0);
+		return (float) (((this.White * 1.1) + this.Black) / 2.0);
 	}
 
 }
