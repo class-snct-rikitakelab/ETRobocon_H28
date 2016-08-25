@@ -40,6 +40,8 @@ public class Starter {
 
 			Delay.msDelay(20);
 		}
+
+		CommandTimer.cancel();
 	}
 
 	static void init(){
