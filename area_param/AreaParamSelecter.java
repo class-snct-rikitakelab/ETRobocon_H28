@@ -1,10 +1,8 @@
-package linetrace;
+package area_param;
 
 public class AreaParamSelecter {
 
 	private DistanceMeasure dm = new DistanceMeasure();
-	private ParamKeeper pk = new ParamKeeper();
-	private SpeedKeeper sk = new SpeedKeeper();
 
 	public int i = 0;
 	public float dis = 0.0F;
@@ -25,7 +23,7 @@ public class AreaParamSelecter {
 		new AreaParamKeeper(7.95F,	8.0F,	-80.0F,	0.0F,	30.0F,	50.0F),
 		new AreaParamKeeper(8.0F,	80.0F,	0.0F,	0.0F,	30.0F,	0.0F)
 	};
-
+/*
 	public void setParams(){
 
 		dis = dm.measureDistance_Meter();
@@ -41,6 +39,62 @@ public class AreaParamSelecter {
 				break;
 			}
 		}
+
+	}
+*/
+	public AreaParamKeeper getParams(){
+
+		dis = dm.measureDistance_Meter();
+
+		for(i=0; i<areaparams.length; i++){
+			if(areaparams[i].checkPos(dis) == true){
+				return areaparams[i];
+			}
+		}
+
+		return null;
+
+	}
+
+	public float getSpeed(){
+
+		dis = dm.measureDistance_Meter();
+
+		for(i=0; i<areaparams.length; i++){
+			if(areaparams[i].checkPos(dis) == true){
+				return areaparams[i].getForward();
+			}
+		}
+
+		return 0.0F;
+	}
+
+	private float measureDistance_Degree(){
+
+		float rotate = hardware.Hardware.motorPortL.getTachoCount() + hardware.Hardware.motorPortR.getTachoCount();
+
+		rotate = rotate / 2.0F;
+
+		return rotate;
+	}
+
+	private float measureDistance_Meter(){
+
+		float rotate = hardware.Hardware.motorPortL.getTachoCount() + hardware.Hardware.motorPortR.getTachoCount();
+
+		rotate = rotate / 2.0F;
+
+		return (rotate / 360.0F) * 0.262F;
+
+	}
+
+	private float measureDistance_CMeter(){
+
+		float rotate = hardware.Hardware.motorPortL.getTachoCount() + hardware.Hardware.motorPortR.getTachoCount();
+
+		rotate = rotate / 2.0F;
+
+		return (rotate / 360.0F) * 26.2F;
 
 	}
 

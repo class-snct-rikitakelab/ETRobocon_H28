@@ -1,19 +1,22 @@
-package linetrace;
+package drive_control;
+
+import area_param.AreaParamKeeper;
+import area_param.AreaParamSelecter;
 
 public class TurnCalc {
 
 	private BrightMeasure bm;
 	private BrightTargetKeeper btk;
-	private ParamKeeper pk;
+	private AreaParamSelecter aps;
 
 	float currentDiff;
 	float prevDiff;
 	float integral = 0.0F;
 
-	TurnCalc(){
+	public TurnCalc(){
 		bm = new BrightMeasure();
 		btk = new BrightTargetKeeper();
-		pk = new ParamKeeper();
+		aps = new AreaParamSelecter();
 
 		currentDiff = bm.measureBrightness() - btk.getTarget();
 		prevDiff = currentDiff;
@@ -23,14 +26,16 @@ public class TurnCalc {
 
 		float bright = bm.measureBrightness();
 
+		AreaParamKeeper buff = aps.getParams();
+
 		currentDiff = bright - btk.getTarget();
 
-		float turn = pk.getP()*currentDiff;
+		float turn = buff.getP()*currentDiff;
 
-		turn += pk.getD()*(currentDiff - prevDiff);
+		turn += buff.getD()*(currentDiff - prevDiff);
 		prevDiff = currentDiff;
 
-		integral += pk.getI() * ((currentDiff + prevDiff) / 2.0F);
+		integral += buff.getI() * ((currentDiff + prevDiff) / 2.0F);
 
 		//turn += D*(currentDiff - prevDiff) / DELTA;
 

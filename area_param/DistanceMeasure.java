@@ -1,4 +1,4 @@
-package linetrace;
+package area_param;
 
 public class DistanceMeasure {
 

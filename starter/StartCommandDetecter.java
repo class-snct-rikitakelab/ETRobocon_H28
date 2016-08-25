@@ -1,4 +1,4 @@
-package linetrace;
+package starter;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -6,10 +6,12 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import hardware.Hardware;
 
-public class establish {
+public class StartCommandDetecter{
 
     private static final int   SOCKET_PORT          = 7360; // PCと接続するポート
+    public static int START_COMMAND = 71;
 
     private static ServerSocket    server = null;
     private static Socket          client = null;
@@ -17,10 +19,11 @@ public class establish {
     private static DataInputStream dataInputStream = null;
     private static int             remoteCommand = 0;
 
-    /*
-     * 通信確立を行う
-     */
-	static void esta(){
+	public StartCommandDetecter(){
+
+	}
+
+	public void esta(){
 		if (server == null) { // 未接続
             try {
                 server = new ServerSocket(SOCKET_PORT);
@@ -42,34 +45,17 @@ public class establish {
         }
 	}
 
-	/*
-     * リモートコマンドのチェック
-     */
-    static boolean checkRemoteCommand(int command) {
-        if (remoteCommand > 0) {
-            if (remoteCommand == command) {
-                return true;
-            }
-        }
-        return false;
-    }
+	public boolean checkCommand(){
 
-    /*
-     * 通信接続の解除
-     */
-    public static void finish(){
-    	if (server != null) {
-            try { server.close(); } catch (IOException ex) {}
-        }
-    }
+		if(Hardware.touchSensorIsPressed() == true){
+			return true;
+		}
 
-    public static void reset(){
-    	remoteCommand = 0;
-    	server = null;
-    	inputStream = null;
-    	dataInputStream = null;
-    	client = null;
+		if(remoteCommand ==  START_COMMAND){
+			return true;
+		}
 
+		return false;
+	}
 
-    }
 }

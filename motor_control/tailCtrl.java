@@ -1,4 +1,4 @@
-package linetrace;
+package motor_control;
 
 import hardware.Hardware;
 
@@ -9,7 +9,7 @@ public class tailCtrl {
     private static final float P_GAIN               = 2.5F; // 完全停止用モータ制御比例係数
     private static final int   PWM_ABS_MAX          = 60;   // 完全停止用モータ制御PWM絶対最大値
 
-	static final void tailTwo() {
+	public static final void tailTwo() {
         float pwm = (float)(TAIL_ANGLE_DRIVE - Hardware.motorPortT.getTachoCount()) * P_GAIN; // 比例制御
         // PWM出力飽和処理
         if (pwm > PWM_ABS_MAX) {
@@ -20,7 +20,7 @@ public class tailCtrl {
         Hardware.motorPortT.controlMotor((int)pwm, 1);
     }
 
-	static final void tailThree() {
+	public static final void tailThree() {
         float pwm = (float)(TAIL_ANGLE_STAND_UP - Hardware.motorPortT.getTachoCount()) * P_GAIN; // 比例制御
         // PWM出力飽和処理
         if (pwm > PWM_ABS_MAX) {

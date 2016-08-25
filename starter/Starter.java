@@ -1,4 +1,7 @@
-package linetrace;
+package starter;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import Balancer.Balancer;
 import hardware.Hardware;
@@ -6,11 +9,41 @@ import lejos.hardware.Battery;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.port.BasicMotorPort;
 import lejos.utility.Delay;
+import motor_control.tailCtrl;
 
-public class initialize {
-    /*
-     * 走行体の初期化を行う
-     */
+public class Starter {
+
+	StartCommandDetecter scd = new StartCommandDetecter();
+	tailCtrl tail = new tailCtrl();
+
+	public void start(){
+
+		init();
+
+		Timer CommandTimer = new Timer();
+		TimerTask CommandTask = new TimerTask(){
+
+			public void run(){
+				scd.esta();
+			}
+		};
+
+		CommandTimer.scheduleAtFixedRate(CommandTask, 0, 20);
+
+		while(true){
+
+			if(scd.checkCommand() == true){
+				break;
+			}
+
+			tail.tailThree();
+
+			Delay.msDelay(20);
+		}
+
+		CommandTimer.cancel();
+	}
+
 	static void init(){
 		LCD.drawString("Please Wait...  ", 0, 4);
 		Hardware.gyro.reset();

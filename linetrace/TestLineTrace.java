@@ -3,10 +3,13 @@ package linetrace;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import drive_control.BrightMeasure;
+import drive_control.BrightTargetKeeper;
 import hardware.Hardware;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
+import starter.Starter;
 
 public class TestLineTrace {
 
@@ -16,74 +19,21 @@ public class TestLineTrace {
 	public static void main(String[] args) {
 		// TODO 自動生成されたメソッド・スタブ
 
-		final TurnCalc tc = new TurnCalc();
-		final WheelMotorCtrl wmc = new WheelMotorCtrl();
-		final tailCtrl tail = new tailCtrl();
-		final initialize initializer = new initialize();
-		final ForwardCalculator fc = new ForwardCalculator();
-		final AreaParamSelecter aps = new AreaParamSelecter();
-		final SpeedKeeper sk = new SpeedKeeper();
-		final establish esta = new establish();
-
-		initializer.init();
+		final LineTracer lt = new LineTracer();
+		Starter start = new Starter();
 
 		calibration();
 
-		Timer CommandTimer = new Timer();
-		TimerTask CommandTask = new TimerTask(){
-
-			public void run(){
-				esta.esta();
-			}
-		};
+		start.start();
 
 		Sound.beep();
-
-		boolean flag = false;
-		//CommandTimer.schedule(CommandTask, 0, 20);
-
-		while(true){
-
-
-			if(Hardware.touchSensorIsPressed() == true){
-				flag = true;
-			}
-
-			if(esta.checkRemoteCommand(START_COMMAND))break;
-
-			if(flag == true) break;
-
-			tail.tailThree();
-
-			Delay.msDelay(20);
-		}
-
-		Sound.beep();
-
-		CommandTimer.cancel();
 
 		Timer driveTimer = new Timer();
 		TimerTask driveTask = new TimerTask(){
-			float forward = 0.0F;
-			int count = 0;
-			int lscount = 0;
-			long starttime = System.nanoTime();
 
 			public void run(){
 
-				if(++count > 20){
-					count = 0;
-					aps.setParams();
-				}
-
-				tail.tailTwo();
-
-				forward = sk.getTarget();
-				float turn = tc.calcTurn();
-
-				wmc.setForward(forward);
-				wmc.setTurn(turn);
-				wmc.controlWheel();
+				lt.linetrace();
 
 			}
 		};
