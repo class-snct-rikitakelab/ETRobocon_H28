@@ -13,6 +13,8 @@ public class TurnCalc {
 	float prevDiff;
 	float integral = 0.0F;
 
+	private float Kp,Ki,Kd;
+
 	public TurnCalc(){
 		bm = new BrightMeasure();
 		btk = new BrightTargetKeeper();
@@ -20,30 +22,37 @@ public class TurnCalc {
 
 		currentDiff = bm.measureBrightness() - btk.getTarget();
 		prevDiff = currentDiff;
+		Kp = 0.0F;
+		Ki = 0.0F;
+		Kd = 0.0F;
 	}
 
 	public float calcTurn() {
 
 		float bright = bm.measureBrightness();
 
-		AreaParamKeeper buff = aps.getParams();
-
 		currentDiff = bright - btk.getTarget();
 
-		float turn = buff.getP()*currentDiff;
+		float turn = Kp*currentDiff;
 
-		turn += buff.getD()*(currentDiff - prevDiff);
+		turn += Kd*(currentDiff - prevDiff);
 		prevDiff = currentDiff;
 
-		integral += buff.getI() * ((currentDiff + prevDiff) / 2.0F);
+		integral += Ki * ((currentDiff + prevDiff) / 2.0F);
 
 		//turn += D*(currentDiff - prevDiff) / DELTA;
-
 		//integral += I * ((currentDiff + prevDiff) / 2.0F) *DELTA;
-
 		//turn += integral;
 
 		return turn;
+	}
+
+	public void updateParams(float distance){
+		AreaParamKeeper buff = aps.getParams(distance);
+
+		Kp = buff.getP();
+		Ki = buff.getI();
+		Kd = buff.getD();
 	}
 
 }

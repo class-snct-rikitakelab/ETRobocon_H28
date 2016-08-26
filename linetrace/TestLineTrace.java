@@ -3,6 +3,7 @@ package linetrace;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import area_param.DistanceMeasure;
 import drive_control.BrightMeasure;
 import drive_control.BrightTargetKeeper;
 import hardware.Hardware;
@@ -21,6 +22,8 @@ public class TestLineTrace {
 
 		final LineTracer lt = new LineTracer();
 		Starter start = new Starter();
+		final DistanceMeasure dm = new DistanceMeasure();
+		float distance = 0.0F;
 
 		calibration();
 
@@ -28,28 +31,36 @@ public class TestLineTrace {
 
 		Sound.beep();
 
+
+		//↓のタイマは輝度値制御でライントレースする。周期は4ms
 		Timer driveTimer = new Timer();
 		TimerTask driveTask = new TimerTask(){
 
 			public void run(){
-
 				lt.linetrace();
-
 			}
 		};
 
+		//下のタイマは走行距離測定して，PID係数と速度を切り替えている。周期は100ms
+		Timer distanceTimer = new Timer();
+		DistanceTask distancetask = new DistanceTask(lt,dm,distance);
+
+
 		driveTimer.scheduleAtFixedRate(driveTask, 0, 4);
+		distanceTimer.scheduleAtFixedRate(distancetask, 0, 100);
 
+		//一定距離走るとループから抜ける
 		while(true){
+			distance = distancetask.getDistance();
 
-			if(Hardware.touchSensorIsPressed() == true){
+			if(distance > 8.0F){
+				driveTimer.cancel();
+				distanceTimer.cancel();
 				break;
 			}
 
 			Delay.msDelay(20);
 		}
-
-
 
 	}
 
