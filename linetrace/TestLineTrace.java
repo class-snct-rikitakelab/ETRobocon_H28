@@ -1,16 +1,16 @@
 package linetrace;
 
+import hardware.Hardware;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
-import area_param.DistanceMeasure;
-import drive_control.BrightMeasure;
-import drive_control.BrightTargetKeeper;
-import hardware.Hardware;
-import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import starter.Starter;
+import area_param.DistanceMeasure;
+import drive_control.BrightMeasure;
+import drive_control.BrightTargetKeeper;
 
 public class TestLineTrace {
 
@@ -29,7 +29,7 @@ public class TestLineTrace {
 
 		start.start();
 
-		Sound.beep();
+		//Sound.beep();
 
 
 		//↓のタイマは輝度値制御でライントレースする。周期は4ms
