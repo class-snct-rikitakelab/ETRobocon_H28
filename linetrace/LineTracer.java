@@ -24,4 +24,9 @@ public class LineTracer {
 		wmc.controlWheel();
 	}
 
+	public void renewParams(float distance){
+		tc.updateParams(distance);
+		fs.updateForward(distance);
+	}
+
 }
