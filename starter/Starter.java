@@ -1,15 +1,16 @@
 package starter;
 
+import hardware.Hardware;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
-import Balancer.Balancer;
-import hardware.Hardware;
 import lejos.hardware.Battery;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.port.BasicMotorPort;
 import lejos.utility.Delay;
 import motor_control.tailCtrl;
+import Balancer.Balancer;
 
 public class Starter {
 
@@ -42,6 +43,16 @@ public class Starter {
 		}
 
 		CommandTimer.cancel();
+
+		while(true){
+
+			if(Hardware.motorPortT.getTachoCount() >= 96){
+				tail.tailTwo();
+				break;
+			}
+
+			tail.tailStart();
+		}
 	}
 
 	static void init(){
@@ -72,6 +83,7 @@ public class Starter {
 	    Hardware.motorPortR.resetTachoCount();   // 右モータエンコーダリセット
 	    Hardware.motorPortT.resetTachoCount();   // 尻尾モータエンコーダリセット
 	    Balancer.init();            // 倒立振子制御初期化
+	    LCD.clear();
 	}
 
 }
