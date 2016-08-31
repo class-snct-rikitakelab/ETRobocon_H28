@@ -17,7 +17,7 @@ public class LineTracer {
 		tail.tailTwo();
 
 		float forward = fs.SelectForward();
-		float turn = tc.calcTurn();
+		float turn = tc.calcTurn() * -1;
 
 		wmc.setForward(forward);
 		wmc.setTurn(turn);
