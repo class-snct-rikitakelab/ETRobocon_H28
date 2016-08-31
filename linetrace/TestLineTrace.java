@@ -1,16 +1,16 @@
 package linetrace;
 
-import hardware.Hardware;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
-import lejos.hardware.lcd.LCD;
-import lejos.utility.Delay;
-import starter.Starter;
 import area_param.DistanceMeasure;
 import drive_control.BrightMeasure;
 import drive_control.BrightTargetKeeper;
+import hardware.Hardware;
+import lejos.hardware.Sound;
+import lejos.hardware.lcd.LCD;
+import lejos.utility.Delay;
+import starter.Starter;
 
 public class TestLineTrace {
 
@@ -26,6 +26,8 @@ public class TestLineTrace {
 		float distance = 0.0F;
 
 		calibration();
+
+		Sound.beep();
 
 		start.start();
 
