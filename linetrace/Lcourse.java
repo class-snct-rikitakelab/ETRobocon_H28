@@ -45,6 +45,7 @@ public class Lcourse {
 		TimerTask driveTask = new TimerTask(){
 
 			public void run(){
+
 				lt.linetrace();
 			}
 		};
@@ -61,8 +62,13 @@ public class Lcourse {
 		while(true){
 			distance = distancetask.getDistance();
 
-			if(distance > 8.0F){
+			if(distance > 7.8F){
 				driveTimer.cancel();
+
+				for(int i=0;i<9;i++){
+					lt.back();
+					Delay.msDelay(4);
+				}
 
 				goToLUG.gotoLUG(40.0F);
 				LUG.LUG_down();
@@ -115,20 +121,6 @@ public class Lcourse {
 		tk.setWhite(bright.measureBrightness());
 		LCD.clear();
 
-		flag = false;
-
-		LCD.drawString("Detect EDGE", 0, 0);
-		while(flag == false){
-			if(Hardware.touchSensorIsPressed() == true){
-				flag = true;
-			}else{
-				if(flag == true){
-					break;
-				}
-			}
-		}
-		tk.setEdge(bright.measureBrightness());
-		LCD.clear();
 		flag = false;
 
 		LCD.drawString("Detect GRAY", 0, 0);

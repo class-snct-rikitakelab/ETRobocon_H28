@@ -29,4 +29,12 @@ public class LineTracer {
 		fs.updateForward(distance);
 	}
 
+	public void back(){
+
+		tail.tailThree();
+
+		wmc.setForward(-20.0F);
+		wmc.setTurn(0);
+		wmc.controlWheel();
+	}
 }
