@@ -28,6 +28,7 @@ public class Lcourse {
 		toLUG3 goToLUG = new toLUG3();
 		GarageSolver garage = new GarageSolver(36,90,60);
 		LookUpGateEvader LUG = new LookUpGateEvader();
+		int count=0;
 
 		Sound.beep();
 
@@ -62,23 +63,56 @@ public class Lcourse {
 		while(true){
 			distance = distancetask.getDistance();
 
-			if(distance > 7.8F){
-				driveTimer.cancel();
+			if(distance > 8.0F){
+				if(++count>10){
+					if(Hardware.sonarAlert(0.3F)){
+						driveTimer.cancel();
 
-				for(int i=0;i<9;i++){
-					lt.back();
-					Delay.msDelay(4);
+						Sound.beep();
+						for(int i=0;i<10;i++){
+							Hardware.motorPortL.controlMotor(40, 1);
+							Hardware.motorPortR.controlMotor(40, 1);
+							Delay.msDelay(20);
+						}
+						Hardware.motorPortR.resetTachoCount();
+						Hardware.motorPortL.resetTachoCount();
+						Hardware.motorPortR.controlMotor(0,1);
+						Hardware.motorPortL.controlMotor(0,1);
+
+						Sound.beep();
+						LCD.clear();
+						//LCD.drawString("gotoLUG", 0, 4);
+						//goToLUG.gotoLUG(-40.0F);
+						Hardware.motorPortR.controlMotor(0,1);
+						Hardware.motorPortL.controlMotor(0,1);
+						LCD.clear();
+						Sound.beep();
+						LCD.drawString("LUG_down", 0, 4);
+						LUG.LUG_down();
+						LCD.clear();
+						Sound.beep();
+						LCD.drawString("LUG_go", 0, 4);
+						LUG.LUG_go();
+						Hardware.motorPortR.controlMotor(0,1);
+						Hardware.motorPortL.controlMotor(0,1);
+						LCD.clear();
+						Sound.beep();
+						LCD.drawString("LUG_up", 0, 4);
+						LUG.LUG_up();
+						Hardware.motorPortR.resetTachoCount();
+						Hardware.motorPortL.resetTachoCount();
+						LCD.clear();
+						Sound.beep();
+						LCD.drawString("SolveGarage", 0, 4);
+						garage.SolveGarage();
+
+						break;
+
+					}
+					count=0;
 				}
 
-				goToLUG.gotoLUG(40.0F);
-				LUG.LUG_down();
-				LUG.LUG_go();
-				LUG.LUG_up();
-				garage.SolveGarage();
-
-				break;
 			}
-
 			Delay.msDelay(20);
 		}
 

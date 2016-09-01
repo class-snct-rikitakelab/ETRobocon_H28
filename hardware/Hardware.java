@@ -70,5 +70,17 @@ public class Hardware {
         return ((int)sampleTouch[0] != 0);
     }
 
+    /*
+     * 超音波センサによる障害物検知
+     * @return true(障害物あり)/false(障害物無し)
+     */
+    public static final boolean sonarAlert(float DISTANCE) {
+        float distance = Hardware.getSonarDistance();
+        if ((distance <= DISTANCE) && (distance >= 0)) {
+            return true;  // 障害物を検知
+        }
+        return false;
+    }
+
 
 }

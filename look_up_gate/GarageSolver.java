@@ -1,6 +1,7 @@
 package look_up_gate;
 
 import hardware.Hardware;
+import lejos.hardware.Sound;
 import lejos.utility.Delay;
 
 public class GarageSolver {
@@ -31,8 +32,12 @@ public class GarageSolver {
 
 	public void SolveGarage(){
 
+		Sound.beep();
+
 		BeforeTakeInto();
+		Sound.beep();
 		TakeInto();
+		Sound.beep();
 		KeepSec();
 
 	}
@@ -40,11 +45,9 @@ public class GarageSolver {
 
 	public void BeforeTakeInto(){		//進入待ち状態にはいるためのメソッド 三点倒立で1秒間静止
 
-		tailControl(tailangle);						//（94 - tailangle） * 0.1秒かけて3点倒立する
-		Delay.msDelay(100);
 		for(int i = 94; i < tailangle ; i--){
-			tailControl(i);
-			Delay.msDelay(100);
+			tailControl(tailangle);
+			Delay.msDelay(20);
 		}
 	}
 

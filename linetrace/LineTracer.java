@@ -37,4 +37,13 @@ public class LineTracer {
 		wmc.setTurn(0);
 		wmc.controlWheel();
 	}
+
+	public void stop(){
+
+		tail.tailThree();
+
+		wmc.setForward(0.0F);
+		wmc.setTurn(0.0F);
+		wmc.controlWheel();
+	}
 }

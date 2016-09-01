@@ -12,7 +12,7 @@ public class LookUpGateEvader {
     private static final int   PWM_ABS_MAX          = 60;   // 完全停止用モータ制御PWM絶対最大値
     private static final float P_GAIN               = 2.5F; // 完全停止用モータ制御比例係数
 
-	private static int TAIL_ANGLE_GATE_IN			=67;	//ゲート通過時の尻尾の角度
+	private static int TAIL_ANGLE_GATE_IN			=70;	//ゲート通過時の尻尾の角度
 	private static int TAIL_ANGLE_NOT_GATE			=90;	//完全停止時の尻尾の角度
 	private static int Advance_Mileage				=1;	//前進距離
 	private static int Backward_Mileage				=-100;	//後退距離
@@ -55,6 +55,11 @@ public class LookUpGateEvader {
 			int target = (tachoL + tachoR)/2;
 			int PowerL = Motor_Power + (int)((target - tachoL) * PARAML);
 			int PowerR = Motor_Power + (int)((target - tachoR) * PARAMR);
+			if(PowerL > 60){
+				PowerL=60;
+			}if(PowerR > 60){
+				PowerR=60;
+			}
 			Hardware.motorPortL.controlMotor(PowerL, 1); // 左モータPWM出力セット
         	Hardware.motorPortR.controlMotor(PowerR, 1); // 右モータPWM出力セット
         	LCD.drawChar((char)Distance, 1, 4);

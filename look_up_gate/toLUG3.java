@@ -49,10 +49,10 @@ public class toLUG3 {
 
 			float turn  = p ;//+ d + i;
 
-			if(turn > 50.0f)
-				turn = 50.0f;
-			else if(turn < -50.0f)
-				turn = -50.0f;
+			if(turn > 20.0f)
+				turn = 20.0f;
+			else if(turn < -20.0f)
+				turn = -20.0f;
 
             PwmL=(int) (forward + turn);
             PwmR=(int) (forward - turn);
@@ -88,10 +88,10 @@ public class toLUG3 {
 
 			float turn  = p ;//+ d + i;
 
-			if(turn > 50.0f)
-				turn = 50.0f;
-			else if(turn < -50.0f)
-				turn = -50.0f;
+			if(turn > 20.0f)
+				turn = 20.0f;
+			else if(turn < -20.0f)
+				turn = -20.0f;
 
             PwmL=(int) (forward + turn);
             PwmR=(int) (forward - turn);

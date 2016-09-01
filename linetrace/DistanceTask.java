@@ -10,8 +10,8 @@ public class DistanceTask extends TimerTask{
 	private DistanceMeasure dm;
 	private float distance;
 
-	public DistanceTask(LineTracer linetracer,DistanceMeasure dm, float distance){
-		this.linetracer = linetracer;
+	public DistanceTask(LineTracer lt,DistanceMeasure dm, float distance){
+		this.linetracer = lt;
 		this.dm = dm;
 		this.distance = distance;
 	}
