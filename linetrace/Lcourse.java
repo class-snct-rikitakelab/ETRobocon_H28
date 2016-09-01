@@ -13,6 +13,7 @@ import lejos.utility.Delay;
 import look_up_gate.GarageSolver;
 import look_up_gate.LookUpGateEvader;
 import look_up_gate.toLUG3;
+import motor_control.tailCtrl;
 import starter.Starter;
 
 public class Lcourse {
@@ -68,18 +69,17 @@ public class Lcourse {
 					if(Hardware.sonarAlert(0.3F)){
 						driveTimer.cancel();
 
-						Sound.beep();
-						for(int i=0;i<10;i++){
-							Hardware.motorPortL.controlMotor(40, 1);
-							Hardware.motorPortR.controlMotor(40, 1);
-							Delay.msDelay(20);
+						for(int i=0;i<50;i++){
+							tailCtrl.tailThree();
+							Hardware.motorPortL.controlMotor(80, 1);
+							Hardware.motorPortR.controlMotor(80, 1);
+							Delay.msDelay(4);
 						}
 						Hardware.motorPortR.resetTachoCount();
 						Hardware.motorPortL.resetTachoCount();
 						Hardware.motorPortR.controlMotor(0,1);
 						Hardware.motorPortL.controlMotor(0,1);
 
-						Sound.beep();
 						LCD.clear();
 						//LCD.drawString("gotoLUG", 0, 4);
 						//goToLUG.gotoLUG(-40.0F);

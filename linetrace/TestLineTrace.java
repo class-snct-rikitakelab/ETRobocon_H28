@@ -19,7 +19,7 @@ public class TestLineTrace {
 	public static void main(String[] args) {
 		// TODO 自動生成されたメソッド・スタブ
 
-		final myLineTracer lt = new myLineTracer();
+		final LineTracer lt = new LineTracer();
 		Starter start = new Starter();
 		final DistanceMeasure dm = new DistanceMeasure();
 		float distance = 0.0F;
@@ -33,12 +33,12 @@ public class TestLineTrace {
 		start.start();
 
 		//Sound.beep();
-		
+
 		goToLUG.gotoLUG(40.0F);
 		LUG.LUG_down();
 		LUG.LUG_go();
 		LUG.LUG_up();
-		garage.SolveGarage();
+		//GarageSolver.SolveGarage();
 
 	}
 
