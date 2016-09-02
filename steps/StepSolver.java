@@ -1,7 +1,5 @@
 package steps;
-/* 灰色検知がうまくゆかない
- * 現状は一定時間
-*/
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,7 +34,7 @@ public class StepSolver {
 	private final float	GYRO_LIMIT		= 80.0F;
 	private final int	TACHO_LIMIT		= 450;
 
-	//private LogSender sender = new LogSender();
+	private LogSender sender = new LogSender();
 
 	private float pwmL;
 	private float pwmR;
@@ -85,7 +83,7 @@ public class StepSolver {
 	private static boolean isBumpR = false;
 
 	private static double avarageVoltage = 0;
-	private static final int THRESHOLD_VOLTAGE = 150;
+	private static final int THRESHOLD_VOLTAGE = 200;//150
 
 	// 直進検知用
 	private final int VALUE_STRAIGHT = 50;
@@ -105,27 +103,29 @@ public class StepSolver {
 	private float lastturn = 0;
 	boolean grayFlag = false;
 
-
-/*	public void mani(){
+/** テスト用 */
+	public void mani(){
 		init();
-		Sound.beep();
 		LCD.drawString("connect", 0, 0);
-		//sender.connect();
 		calibration();
 		LTthreshold = LTnormal = (blackColor+whiteColor)/2;
 		LTgray = (grayColor+whiteColor)/2;
 		ready();
 		starttime = System.nanoTime();
-		toGarage();
+		solveStep();
 		for(int i = 0;i < 100;++i){
 			Hardware.motorPortL.controlMotor(0, 1);
 			Hardware.motorPortR.controlMotor(0, 1);
 			Hardware.motorPortT.controlMotor(0, 1);
 		}
 		logExc();
-		//sender.send();
-	}*/
+		Sound.beep();
+		sender.connect();
+		sender.send();
+	}
 
+
+/** 階段からガレージまで */
 	public void solveStep(){
 		starttime = System.nanoTime();
 		LTthreshold = LTnormal = (blackColor+whiteColor)/2;
@@ -139,6 +139,7 @@ public class StepSolver {
 		toGarage();
 	}
 
+/** ゴール地点から階段に近づく */
 /** 低速で走行し、ライントレースで向きを板と合わせる */
 	public void parallelToStep(){
 		isEnd = false;
@@ -157,9 +158,9 @@ public class StepSolver {
 						turn = 0;
 						isFirst = false;
 					}
-					if(checkTime(1000)){speed = 5;turn = 0;}
+					if(checkTime(1000)){speed = 5;turn = -10;}
 					runByBalance();
-					if(checkTime(0)){
+					if(checkTime(1500)){
 						++i;
 						isFirst = true;
 					}
@@ -228,7 +229,7 @@ public class StepSolver {
 						speed= 0;
 						turn = 0;
 						LTthreshold = LTnormal;
-						GYRO_OFFSET = -8;
+						GYRO_OFFSET = -4;
 						checkDistanceInit();
 						checkTimeInit();
 						keepRotationInit();
@@ -236,19 +237,19 @@ public class StepSolver {
 					}
 					runByBalance();
 					//setLog(i);
-					if(!checkDistance(-50)){
+					if(!checkDistance(-60)){
 						++i;
 						isFirst = true;
 					}
 					break;
 				case 2:
 					if(isFirst){
-						GYRO_OFFSET = 10;
+						GYRO_OFFSET = -1;
 						checkTimeInit();
 						isFirst = false;
 					}
-					//if(GYRO_OFFSET<10&&++counter>15){counter = 0;++GYRO_OFFSET;}
-					//if(checkTime(200))GYRO_OFFSET = 8;
+					//if(GYRO_OFFSET<8&&++counter>10){counter = 0;++GYRO_OFFSET;}
+					if(checkTime(100))GYRO_OFFSET = 10;
 					keepRotation();
 					runByBalance();
 					//setLog(i);
@@ -266,7 +267,7 @@ public class StepSolver {
 					keepRotation();
 					runByBalance();
 					//setLog(i);
-					if(checkTime(400)){
+					if(checkTime(500)){//400?
 						++i;
 						isFirst = true;
 					}
@@ -279,7 +280,7 @@ public class StepSolver {
 					keepRotation();
 					runByBalance();
 					//setLog(i);
-					if(!checkDistance(130)){
+					if(!checkDistance(170)){
 						++i;
 						isFirst = true;
 					}
@@ -293,7 +294,7 @@ public class StepSolver {
 					keepRotation();
 					runByBalance();
 					//setLog(i);
-					if(checkTime(100)){
+					if(checkTime(300)){
 						++i;
 						isFirst = true;
 					}
@@ -317,7 +318,7 @@ public class StepSolver {
 		}
 	}
 
-	/** 1段目上で板と平行にする */
+/** 1段目上で板と平行にする */
 	public void parallelToStep2(){
 		isEnd = false;
 		Timer driveTimer = new Timer();
@@ -335,26 +336,16 @@ public class StepSolver {
 						checkTimeInit();
 						isFirst = false;
 					}
+					if(checkTime(500)){
+						speed = 20;turn = 20;
+					}
 					runByBalance();
-					if(checkTime(300)){
+					if(checkTime(800)){
 						++i;
 						isFirst = true;
 					}
 					break;
-				case 1:
-					if(isFirst){
-						turn = 20;
-						speed = 20;
-						checkTimeInit();
-						isFirst = false;
-					}
-					runByBalance();
-					if(checkTime(300)){
-						++i;
-						isFirst = true;
-					}
-					break;
-				case 2://減速しながら進んで向きを合わせる
+				case 1://減速しながら進んで向きを合わせる
 					if(isFirst){
 						speed = 25;
 						checkBumpInit();
@@ -363,7 +354,7 @@ public class StepSolver {
 					setTurnByLT();
 					checkBump();
 					runByBalance();
-					if(checkDistance(200)){
+					if(checkDistance(250)){
 						++i;
 						isFirst = true;
 					}
@@ -414,25 +405,25 @@ public class StepSolver {
 						speed= 0;
 						turn = 0;
 						LTthreshold = LTnormal;
-						GYRO_OFFSET = -8;
+						GYRO_OFFSET = -4;
 						checkDistanceInit();
 						checkTimeInit();
 						keepRotationInit();
 						isFirst = false;
 					}
 					runByBalance();
-					if(!checkDistance(-50)){
+					if(!checkDistance(-60)){
 						++i;
 						isFirst = true;
 					}
 					break;
 				case 2:
 					if(isFirst){
-						GYRO_OFFSET = 10;
+						GYRO_OFFSET = -1;
 						checkTimeInit();
 						isFirst = false;
 					}
-					//if(checkTime(200))GYRO_OFFSET = 8;
+					if(checkTime(100))GYRO_OFFSET = 10;
 					keepRotation();
 					runByBalance();
 					if(checkDistance(40)){
@@ -448,7 +439,7 @@ public class StepSolver {
 					}
 					keepRotation();
 					runByBalance();
-					if(checkTime(400)){
+					if(checkTime(500)){//400?
 						++i;
 						isFirst = true;
 					}
@@ -460,7 +451,7 @@ public class StepSolver {
 					}
 					keepRotation();
 					runByBalance();
-					if(!checkDistance(130)){
+					if(!checkDistance(170)){
 						++i;
 						isFirst = true;
 					}
@@ -473,7 +464,7 @@ public class StepSolver {
 					}
 					keepRotation();
 					runByBalance();
-					if(checkTime(100)){
+					if(checkTime(300)){
 						++i;
 						isFirst = true;
 					}
@@ -512,26 +503,17 @@ public class StepSolver {
 						checkTimeInit();
 						isFirst = false;
 					}
-					runByBalance();
-					if(checkTime(300)){
-						++i;
-						isFirst = true;
-					}
-					break;
-				case 1:
-					if(isFirst){
+					if(checkTime(500)){
+						speed = 15;
 						turn = 10;
-						speed = 10;
-						checkTimeInit();
-						isFirst = false;
 					}
 					runByBalance();
-					if(checkTime(300)){
+					if(checkTime(800)){
 						++i;
 						isFirst = true;
 					}
 					break;
-				case 2://減速しながら進んで向きを合わせる
+				case 1://減速しながら進んで向きを合わせる
 					if(isFirst){
 						speed = 15;
 						isFirst = false;
@@ -543,7 +525,7 @@ public class StepSolver {
 						isFirst = true;
 					}
 					break;
-				case 3:// 止まる
+				case 2:// 止まる
 					if(isFirst){
 						speed = 10;
 						checkTimeInit();
@@ -552,7 +534,7 @@ public class StepSolver {
 					//speed = checkDistanceDifference(250) * 0.5f;
 					setTurnByLT();
 					runByBalance();
-					if(checkDistance(250)){
+					if(checkDistance(220)){
 						++i;
 						isFirst = true;
 					}
@@ -643,7 +625,6 @@ public class StepSolver {
 	public void down(){
 		thetaL = Hardware.motorPortL.getTachoCount();
 		thetaR = Hardware.motorPortR.getTachoCount();
-		thetaI = thetaL + thetaR;
 		Timer driveTimer = new Timer();
 		class DriveTimerTask extends TimerTask {
 			float threshold = 0.15F;
@@ -673,17 +654,18 @@ public class StepSolver {
 				gyroNow = -Hardware.getGyroValue();
 				thetaL = Hardware.motorPortL.getTachoCount();
 				thetaR = Hardware.motorPortR.getTachoCount();
-				theta_ave = (thetaL + thetaR - thetaI)/2;
+				theta_ave = (thetaL + thetaR)/2;
 				battery = Battery.getVoltageMilliVolt();
 				float bright = Hardware.getBrightness();
-				if(count < 100){
-					forward = 5.0F;
+				if(count < 50){
+					forward = 10.0F;
 					turn = (bright - threshold)*100;///0.0F;
 					count++;
 				}else{
 					if(Math.abs(gyroNow)<GYRO_LIMIT && downflag == true/* && theta_ave < TACHO_LIMIT */){
 						forward = 50.0F;
-						turn = -5;//(Hardware.getBrightness() - threshold)*300;
+						if(count++<100)turn = -3;//(Hardware.getBrightness() - threshold)*300;
+						else turn = 0;
 						if(turn >100){
 							turn = 100;
 						}
@@ -695,11 +677,11 @@ public class StepSolver {
 						turn = 0.0F;
 						downflag = false;
 						down_theta = theta_ave;
-					}else if(stopcount < 200 && downflag == false && down_theta < theta_ave + 150) {
+					}else if(downflag == false &&(theta_ave - down_theta < 200 || stopcount < 350)) {
 						forward = 40.0F;
 						turn = 0.0F;
 						stopcount++;
-					}else if((stopcount > 350 && bright <0.25F)){
+					}else if((theta_ave - down_theta > 200 && stopcount > 350) && bright <0.25F){
 						forward = 0;
 						turn = 0;
 						stopcount = 2000;
@@ -733,20 +715,18 @@ public class StepSolver {
 		DriveTimerTask driveTask = new DriveTimerTask(true);
 
 		driveTimer.scheduleAtFixedRate(driveTask, 0, 4);
-		char endc = 0;
 		for(;;){
 			//Delay.msDelay(100);
 			LCD.clear();
 			Delay.msDelay(20);
 			if(driveTask.getStopCount() >= 2000){
-				if(++endc>10){
 					driveTask.cancel();
 					break;
-				}
 			}
 		}
 	}
 
+/** 降りたところから灰色検知してガレージに入る */
 	public void toGarage(){
 		// 灰色からガレージ終端まで447mm
 		isEnd = false;
@@ -756,7 +736,7 @@ public class StepSolver {
 			boolean isFirst = true;
 			@Override
 			public void run() {
-				if(i!=0&&Hardware.touchSensorIsPressed())isEnd = true;
+				if(i!=0&&Hardware.touchSensorIsPressed()){i = 4;isFirst = true;}
 				switch(i){
 				case 0://最初に静止する
 					if(isFirst){
@@ -769,7 +749,7 @@ public class StepSolver {
 					}
 					if(checkTime(1000)){speed = -15;turn = 0;}
 					runByBalance();
-					if(!checkDistance(-30)){
+					if(!checkDistance(-20)){
 						++i;
 						isFirst = true;
 					}
@@ -777,21 +757,26 @@ public class StepSolver {
 				case 1://LTで前に進む
 					if(isFirst){
 						LCD.drawString("run", 0, 1);
-						speed = 25;
+						speed = 10;
 						turn = 0;
 						checkTimeInit();
 						//LTmultiplier = 70;
-						LTgray = grayColor*0.70f+whiteColor*0.30f;//灰色寄りにする
+						LTgray = grayColor*0.80f+whiteColor*0.20f;//灰色寄りにする
 						grayCount = 0;
 						isFirst = false;
 					}// 輝度と距離を両方使う
 					if(checkTime(500))setTurnByLT();
-					if(checkTime(2500)&&checkDistance(50)){
-						//blackCount = 0;
-						LTthreshold = LTnormal = blackColor*0.30f+grayColor*0.70f;//黒寄りにして誤検知を防ぐ
-						checkGray();
+					if(checkTime(1500)&&checkDistance(50)){
+						blackCount = 0;
+						speed = 20;
+						if(checkDistance(150)){
+							LTthreshold = LTnormal = blackColor*0.30f+grayColor*0.70f;//黒寄りにして誤検知を防ぐ
+							checkGrayGarage();}
 						limitTurn();
+					}else{
+						if(turn<5)turn = 5;
 					}
+					//LTmultiplier = 100;
 					runByBalance();
 					if(150 < grayCount){grayFlag = true;}//灰色検知の基準値 150-200くらい?
 					if(grayFlag&&grayCount < 20){
@@ -817,7 +802,7 @@ public class StepSolver {
 					}
 					setTurnByLT();
 					runByBalance();
-					if(checkDistance(380)){
+					if(checkDistance(360)){
 						++i;
 						isFirst = true;
 					}
@@ -834,9 +819,9 @@ public class StepSolver {
 						isFirst = false;
 					}
 					if(checkTime(200))speed = 0;
-					if(tail < 80 && checkTime(800+(tail-75)*200))tail++;
+					if(tail < 85 && checkTime(800+(tail-75)*400))tail++;
 					runByTail();
-					if(checkTime(2000)){
+					if(checkTime(12000)){
 						++i;
 						isFirst = true;
 					}
@@ -845,7 +830,7 @@ public class StepSolver {
 					if(isFirst){
 						speed = 0;
 						turn = 0;
-						tail = 80;
+						tail = 85;
 						checkTimeInit();
 						isFirst = false;
 					}
@@ -860,7 +845,7 @@ public class StepSolver {
 					break;
 				}
 				lastturn = turn;
-				//setLog(0);
+				setLog(0);
 			}
 		};
 		driveTimer.scheduleAtFixedRate(driveTask, 0, 4);
@@ -1051,45 +1036,46 @@ public class StepSolver {
 	}
 
 	private void checkGray(){
-		if((grayColor*0.80f<bright) && (bright<grayColor*1.00 + whiteColor*0.20)){
-			if(30<grayCount){
-				if(100<grayCount) LTthreshold = LTgray;
-				else LTthreshold = LTgray + whiteColor * 0.30f;
-				//if(50<grayCount)
-					LTmultiplier = 150;//130
-				if((grayColor*0.80f+blackColor*0.20<bright) && (bright<grayColor*0.70+whiteColor*0.30))++grayCount;
-			}
-			else{
-
-				++grayCount;
-			}
+		if((grayColor-0.05<bright) && (bright<grayColor+0.05)){
+			++grayCount;
+			if(grayCount<50)LTthreshold = LTgray;
 		}
-		else if(bright < grayColor*0.80f){
-			grayCount /= 1.3;
-			LTthreshold = LTnormal;
-			LTmultiplier = 150;//70
-		}else{
-			if(!grayFlag&&0<grayCount)
-			grayCount/=1.08;
-			//grayCount -= 2+grayCount/100;
+		else{
+			grayCount = 0;
+			if(bright < blackColor+0.05f)LTthreshold = LTnormal;
 		}
 	}
 
-	private void checkGrayTail(){
-		float color = Hardware.getBrightness();
-		if(grayColor*0.80f<color && color<grayColor*1.20f){
-			++grayCount;
-			if(50<grayCount)LTthreshold = LTgray;
+	private void checkGrayGarage(){
+		if((grayColor*0.80f+blackColor*0.20<bright) && (bright<grayColor*0.40 + whiteColor*0.60)){//bright<grayColor*1.00 + whiteColor*0.20
+			if(50<grayCount){
+				//speed = 15;
+				LTmultiplier = 200;//130
+				if(80<grayCount){
+					LTthreshold = LTgray;
+					if(160<grayCount)LTmultiplier = 100;
+					if((grayColor*0.90f+blackColor*0.10<bright) && (bright<grayColor*0.60+whiteColor*0.40))++grayCount;
+				}
+				else{
+					LTthreshold = LTgray + whiteColor * 0.20f;
+					++grayCount;
+				}
+				//if(50<grayCount)
+			}
+			else{
+				if((grayColor*0.90f+blackColor*0.10<bright) && (bright<grayColor*0.80+whiteColor*0.20))++grayCount;
+			}
 		}
-		else if(50<grayCount){
-			if(((grayColor*0.60f+whiteColor*0.40f)<color) && (color<(grayColor*0.40f+whiteColor*0.60f))){
-				++grayTraceCount;
-			}
-			else if(color < (grayColor*0.70f+whiteColor*0.30f)){
-				grayCount = 0;
-				grayTraceCount = 0;
-				LTthreshold = LTnormal;
-			}
+		else if(bright <= grayColor*0.80f+blackColor*0.20){
+			grayCount /= 1.3;
+			LTthreshold = LTnormal;
+			LTmultiplier = 100;//70
+		}else{
+			if(grayFlag&&0<grayCount) // !grayFlag&&
+			//grayCount/=1.08;
+			grayCount -= 2;
+			LTthreshold = LTnormal;
+			LTmultiplier = 100;
 		}
 	}
 
@@ -1174,7 +1160,7 @@ public class StepSolver {
 
 	private int lastEnc = 0;
 
-/*	private float lastbright[] = new float[2500];
+	private float lastbright[] = new float[2500];
 	private float lastgray[] = new float[2500];
 	private int nowbrightnumber = 0;
 	private void setLog(int i){
@@ -1192,6 +1178,5 @@ public class StepSolver {
 			//sender.addLog("LB",lastbright[i]-lastbright[i-1], i/50f);
 			sender.addLog("G", lastgray[i], i/50f);
 		}
-	}
-*/
+	}//*/
 }
