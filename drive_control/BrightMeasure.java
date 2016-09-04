@@ -7,4 +7,11 @@ public class BrightMeasure {
 
 		return Hardware.getBrightness();
 	}
+	
+	public float measureNormalizedBrightness(float White,float Black) { 
+		//ˆø”:”’‚¨‚æ‚Ñ•‚Ì‹P“x’lŠî€
+		float brightness;
+		brightness = Hardware.getBrightness();
+		return (White - brightness)/(White - Black);	//”’‚ğ1A•‚ğ0‚Æ‚µ‚Ä³‹K‰»
+	}
 }
