@@ -5,6 +5,7 @@ import hardware.Hardware;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import starter.Starter;
@@ -59,7 +60,7 @@ public class Rcourse {
 		while(true){
 			distance = distancetask.getDistance();
 
-			if(distance > 8.0F){
+			if(distance > 8.05F){
 				driveTimer.cancel();
 				distanceTimer.cancel();
 				LCD.drawString("kaidan", 1, 1);
@@ -79,6 +80,7 @@ public class Rcourse {
 
 		boolean flag = false;
 
+		Sound.beep();
 		LCD.drawString("Detect BLACK", 0, 0);
 		while(true){
 			if(Hardware.touchSensorIsPressed() == true){
@@ -94,6 +96,7 @@ public class Rcourse {
 		LCD.clear();
 		flag = false;
 
+		Sound.beep();
 		LCD.drawString("Detect WHITE", 0, 0);
 		while(true){
 			if(Hardware.touchSensorIsPressed() == true){
@@ -109,6 +112,7 @@ public class Rcourse {
 		LCD.clear();
 		flag = false;
 
+		Sound.beep();
 		LCD.drawString("Detect GRAY", 0, 0);
 		while(true){
 			if(Hardware.touchSensorIsPressed() == true){
@@ -123,6 +127,7 @@ public class Rcourse {
 		LCD.clear();
 		flag = false;
 
+		Sound.beep();
 		LCD.drawString("Detect KAIDAN", 0, 0);
 		while(flag == false){
 			if(Hardware.touchSensorIsPressed() == true){
@@ -135,6 +140,7 @@ public class Rcourse {
 		}
 		tk.setStep(bright.measureBrightness());
 		LCD.clear();
+		Sound.beep();
 	}
 
 

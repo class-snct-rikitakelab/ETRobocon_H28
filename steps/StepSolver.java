@@ -75,8 +75,8 @@ public class StepSolver {
 	private int blackCount = 0;
 
 	// 段差衝突検知用
-	private static final int TACHO_BUMP = 20; // 保存するエンコーダ値の数
-	private static final int THRESHOLD_TACHO = -10; // 衝突したと判定するための値の差の基準値
+	private static final int TACHO_BUMP = 30; // 保存するエンコーダ値の数
+	private static final int THRESHOLD_TACHO = -15; // 衝突したと判定するための値の差の基準値
 	private static int tachoBumpL[] = new int[TACHO_BUMP];
 	private static int tachoBumpR[] = new int[TACHO_BUMP];
 	private static boolean isBumpL = false;
@@ -137,6 +137,11 @@ public class StepSolver {
 		goCenter();
 		down();
 		toGarage();
+		//以下ログ用 消しても問題ない
+		logExc();
+		Sound.beep();
+		sender.connect();
+		sender.send();
 	}
 
 /** ゴール地点から階段に近づく */
@@ -734,6 +739,7 @@ public class StepSolver {
 		TimerTask driveTask = new TimerTask() {
 			int i = 0;
 			boolean isFirst = true;
+			int counter = 0;
 			@Override
 			public void run() {
 				if(i!=0&&Hardware.touchSensorIsPressed()){i = 4;isFirst = true;}
@@ -761,7 +767,8 @@ public class StepSolver {
 						turn = 0;
 						checkTimeInit();
 						//LTmultiplier = 70;
-						LTgray = grayColor*0.80f+whiteColor*0.20f;//灰色寄りにする
+						LTgray = grayColor*0.90f+whiteColor*0.10f;//灰色寄りにする
+						blackCount = 0;
 						grayCount = 0;
 						isFirst = false;
 					}// 輝度と距離を両方使う
@@ -769,12 +776,14 @@ public class StepSolver {
 					if(checkTime(1500)&&checkDistance(50)){
 						blackCount = 0;
 						speed = 20;
-						if(checkDistance(150)){
+						if(checkDistance(120)){
 							LTthreshold = LTnormal = blackColor*0.30f+grayColor*0.70f;//黒寄りにして誤検知を防ぐ
-							checkGrayGarage();}
+							checkGrayGarage();
+						}
 						limitTurn();
 					}else{
-						if(turn<5)turn = 5;
+						if(2 < blackCount)counter++;
+						if(counter<2&&turn<5)turn = 5;
 					}
 					//LTmultiplier = 100;
 					runByBalance();
@@ -1048,12 +1057,12 @@ public class StepSolver {
 
 	private void checkGrayGarage(){
 		if((grayColor*0.80f+blackColor*0.20<bright) && (bright<grayColor*0.40 + whiteColor*0.60)){//bright<grayColor*1.00 + whiteColor*0.20
-			if(50<grayCount){
+			if(40<grayCount){
 				//speed = 15;
 				LTmultiplier = 200;//130
 				if(80<grayCount){
 					LTthreshold = LTgray;
-					if(160<grayCount)LTmultiplier = 100;
+					if(120<grayCount)LTmultiplier = 100;
 					if((grayColor*0.90f+blackColor*0.10<bright) && (bright<grayColor*0.60+whiteColor*0.40))++grayCount;
 				}
 				else{
@@ -1067,7 +1076,7 @@ public class StepSolver {
 			}
 		}
 		else if(bright <= grayColor*0.80f+blackColor*0.20){
-			grayCount /= 1.3;
+			grayCount /= 3;//grayCount /= 1.3;
 			LTthreshold = LTnormal;
 			LTmultiplier = 100;//70
 		}else{
