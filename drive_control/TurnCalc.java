@@ -29,10 +29,17 @@ public class TurnCalc {
 
 	public float calcTurn() {
 
+		//”ñ³‹K‰»‚Å‚Ì‹P“x’lˆ—
 		float bright = bm.measureBrightness();
 
 		currentDiff = bright - btk.getTarget();
 
+		//³‹K‰»‚Å‚Ì‹P“x’lˆ—
+		/*
+		float bright = bm.measureNormalizedBrightness(btk.getWhite(),btk.getBlack);
+		
+		currentDiff = bright - btk.getNormalizedTarget();
+		*/
 		float turn = Kp*currentDiff;
 
 		turn += Kd*(currentDiff - prevDiff);
