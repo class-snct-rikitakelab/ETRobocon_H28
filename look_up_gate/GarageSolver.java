@@ -23,6 +23,9 @@ public class GarageSolver {
     private static int   PWM_ABS_MAX          = 60;
     private static float P_GAIN               = 2.5F;
 
+    private static float KP = 100.0F;
+    private static float TARGET = 0.065F;
+
 
 	public GarageSolver(int distanceToGarage, int tailangle, int power){
 		this.distanceToGarage = distanceToGarage - BREAKING_DISTANCE;
@@ -57,15 +60,15 @@ public class GarageSolver {
 		float start = getDistance();
 
 		do{
-			float currentDistance = getDistance();
 
-			int tachoL = Hardware.motorPortL.getTachoCount();
-			int tachoR = Hardware.motorPortR.getTachoCount();
+			float bright = Hardware.getBrightness();
 
-			int target = (tachoL + tachoR)/2;
+			float diff = TARGET - bright;
 
-			int PowerL = Motor_Power + (int)((target - tachoL) * PARAML);
-			int PowerR = Motor_Power + (int)((target - tachoR) * PARAMR);
+			float turn = diff * KP;
+
+			int PowerL = Motor_Power + (int)turn;
+			int PowerR = Motor_Power - (int)turn;
 
 			Hardware.motorPortL.controlMotor(PowerL, 1); // 左モータPWM出力セット
 			Hardware.motorPortR.controlMotor(PowerR, 1); // 右モータPWM出力セット

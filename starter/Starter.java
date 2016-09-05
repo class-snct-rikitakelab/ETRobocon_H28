@@ -1,16 +1,15 @@
 package starter;
 
-import hardware.Hardware;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
+import Balancer.Balancer;
+import hardware.Hardware;
 import lejos.hardware.Battery;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.port.BasicMotorPort;
 import lejos.utility.Delay;
 import motor_control.tailCtrl;
-import Balancer.Balancer;
 
 public class Starter {
 
@@ -31,6 +30,8 @@ public class Starter {
 
 		CommandTimer.scheduleAtFixedRate(CommandTask, 0, 20);
 
+		LCD.drawString("READY TO GO", 0, 0);
+
 		while(true){
 
 			if(scd.checkCommand() == true){
@@ -41,6 +42,8 @@ public class Starter {
 
 			Delay.msDelay(20);
 		}
+
+		LCD.clear();
 
 		CommandTimer.cancel();
 

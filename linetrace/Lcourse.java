@@ -27,7 +27,7 @@ public class Lcourse {
 		float distance = 0.0F;
 
 		toLUG3 goToLUG = new toLUG3();
-		GarageSolver garage = new GarageSolver(36,90,60);
+		GarageSolver garage = new GarageSolver(56,90,30);
 		LookUpGateEvader LUG = new LookUpGateEvader();
 		int count=0;
 
@@ -70,7 +70,7 @@ public class Lcourse {
 						driveTimer.cancel();
 
 						for(int i=0;i<50;i++){
-							tailCtrl.tailThree();
+							tailCtrl.tailStop();
 							Hardware.motorPortL.controlMotor(80, 1);
 							Hardware.motorPortR.controlMotor(80, 1);
 							Delay.msDelay(4);
