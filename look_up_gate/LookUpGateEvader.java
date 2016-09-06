@@ -1,7 +1,6 @@
 package look_up_gate;
 
 import hardware.Hardware;
-import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 //import Drive.EV3Body;
@@ -13,8 +12,10 @@ public class LookUpGateEvader {
     private static final float P_GAIN               = 2.5F; // 完全停止用モータ制御比例係数
     private static float I_GAIN = 0.0F;						//走行体を起すときに使うI制御係数
 
-    private static float TARGET = 0.065F;
-    private static float KP = 100.0F;
+    private static float TARGET = 0.5F;
+    private static float BLACK = 0.0F;
+    private static float WHITE = 0.0F;
+    private static float KP = 80.0F;
 
     private float preDiff = 0.0F;
     private float curDiff = 0.0F;
@@ -35,10 +36,21 @@ public class LookUpGateEvader {
 
 	private static int i;
 
+	public void setBlack(float black){
+		this.BLACK = black;
+	}
+
+	public void setWhite(float white){
+		this.WHITE = white;
+	}
+
 	//走行体を倒す
 	public void LUG_down(){
-		tailControl(TAIL_ANGLE_NOT_GATE);
-		Delay.msDelay(100);
+
+		for(int i = 0;i<200;i++){
+			tailControl(TAIL_ANGLE_NOT_GATE);
+			Delay.msDelay(20);
+		}
 		for(i = TAIL_ANGLE_NOT_GATE; i > TAIL_ANGLE_GATE_IN ; i--){
 			tailControl(i);
 			Delay.msDelay(100);
@@ -48,10 +60,10 @@ public class LookUpGateEvader {
 	//走行体を直す
 	public void LUG_up(){
 
-		I_GAIN = 0.8F;
+		I_GAIN = 0.0F;
 
-		for(int i = 0; i < 300 ; i++){
-			tailControl((int)(TAIL_ANGLE_GATE_IN + (TAIL_ANGLE_NOT_GATE-TAIL_ANGLE_GATE_IN)*((float)i/300.0F)) );
+		for(int i = 0; i < 600 ; i++){
+			tailControl((int)(TAIL_ANGLE_GATE_IN + (TAIL_ANGLE_NOT_GATE-TAIL_ANGLE_GATE_IN)*((float)i/600.0F)) );
 			Hardware.motorPortL.controlMotor(3, 1); // 左モータPWM出力セット
 			Hardware.motorPortR.controlMotor(3, 1); // 右モータPWM出力セット
 			Delay.msDelay(20);
@@ -67,23 +79,30 @@ public class LookUpGateEvader {
 			Delay.msDelay(100);
 		}*/
 	}
+
+	private float getBright(float bright){
+
+		return (bright - BLACK)/(WHITE - BLACK);
+	}
 	//一定距離進める
 	public void LUG_go(){
+
+
 		Distance = cDistance.getDistance()+Advance_Mileage;
 		do{
-			int tachoL = Hardware.motorPortL.getTachoCount();
-			int tachoR = Hardware.motorPortR.getTachoCount();
-			int target = (tachoL + tachoR)/2;
-			int PowerL = Motor_Power + (int)((target - tachoL) * PARAML);
-			int PowerR = Motor_Power + (int)((target - tachoR) * PARAMR);
-			if(PowerL > 40){
-				PowerL=40;
-			}if(PowerR > 40){
-				PowerR=40;
-			}
+
+			float bright = getBright(Hardware.getBrightness());
+
+			float diff = TARGET - bright;
+
+			float turn = diff * KP;
+
+			int PowerL = Motor_Power + (int)turn;
+			int PowerR = Motor_Power - (int)turn;
+
 			Hardware.motorPortL.controlMotor(PowerL, 1); // 左モータPWM出力セット
-        	Hardware.motorPortR.controlMotor(PowerR, 1); // 右モータPWM出力セット
-        	LCD.drawChar((char)Distance, 1, 4);
+			Hardware.motorPortR.controlMotor(PowerR, 1); // 右モータPWM出力セット
+
         	tailControl(TAIL_ANGLE_GATE_IN);
 		}while(cDistance.getDistance() < Distance);
 		Hardware.motorPortL.controlMotor(0, 0);

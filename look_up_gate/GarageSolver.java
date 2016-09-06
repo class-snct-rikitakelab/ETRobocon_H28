@@ -7,7 +7,7 @@ import lejos.utility.Delay;
 public class GarageSolver {
 
 	int distanceToGarage = 40;			//ガレージに進入するために前進する距離cm単位
-	int tailangle = 90;					//三点倒立するためのしっぽの角度
+	int TAIL_ANGLE = 90;					//三点倒立するためのしっぽの角度
 	private int Motor_Power = 60;	//モータの基礎的なPWM値
 	private static float Distance;		//走行終了時の位置
 	private static int BREAKING_DISTANCE = 23; //止まる際の制動距離
@@ -23,14 +23,27 @@ public class GarageSolver {
     private static int   PWM_ABS_MAX          = 60;
     private static float P_GAIN               = 2.5F;
 
-    private static float KP = 100.0F;
-    private static float TARGET = 0.065F;
+    private static float TARGET = 0.4F;
+    private static float BLACK = 0.0F;
+    private static float WHITE = 0.0F;
+    private static float KP = 50.0F;
 
 
-	public GarageSolver(int distanceToGarage, int tailangle, int power){
+	public GarageSolver(int distanceToGarage, int power, float black, float white, float target){
 		this.distanceToGarage = distanceToGarage - BREAKING_DISTANCE;
-		this.tailangle = tailangle;
 		this.Motor_Power = power;
+
+		this.BLACK = black;
+		this.WHITE = white;
+		this.TARGET = target;
+	}
+
+	public void setBlack(float black){
+		this.BLACK = black;
+	}
+
+	public void setWhite(float white){
+		this.WHITE = white;
 	}
 
 	public void SolveGarage(){
@@ -48,8 +61,8 @@ public class GarageSolver {
 
 	public void BeforeTakeInto(){		//進入待ち状態にはいるためのメソッド 三点倒立で1秒間静止
 
-		for(int i = 94; i < tailangle ; i--){
-			tailControl(tailangle);
+		for(int i = 0; i < 150 ; i++){
+			tailControl(this.TAIL_ANGLE);
 			Delay.msDelay(20);
 		}
 	}
@@ -61,7 +74,7 @@ public class GarageSolver {
 
 		do{
 
-			float bright = Hardware.getBrightness();
+			float bright = getBright(Hardware.getBrightness());
 
 			float diff = TARGET - bright;
 
@@ -73,7 +86,7 @@ public class GarageSolver {
 			Hardware.motorPortL.controlMotor(PowerL, 1); // 左モータPWM出力セット
 			Hardware.motorPortR.controlMotor(PowerR, 1); // 右モータPWM出力セット
 
-        	tailControl(tailangle);
+        	tailControl(this.TAIL_ANGLE);
 		}while(getDistance() < Distance);
 	}
 
@@ -90,7 +103,7 @@ public class GarageSolver {
 			Hardware.motorPortR.controlMotor(currentPower, 1);
 			Hardware.motorPortL.controlMotor(currentPower, 1);
 
-			tailControl(tailangle);
+			tailControl(this.TAIL_ANGLE);
 
 			Delay.msDelay(20);
 
@@ -107,7 +120,7 @@ public class GarageSolver {
 		time = 0;
 
 		while(true){
-			tailControl(tailangle);
+			tailControl(this.TAIL_ANGLE);
 			Delay.msDelay(20);
 			time += 20;
 			if(time > 10000) break;
@@ -116,6 +129,11 @@ public class GarageSolver {
 		//LCD.drawString("seidokyori:"+(end-start), 0, 4);
 
 		//Button.waitForAnyEvent();
+	}
+
+	private float getBright(float bright){
+
+		return (bright - BLACK)/(WHITE - BLACK);
 	}
 
 	private float getDistance(){

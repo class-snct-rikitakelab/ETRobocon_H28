@@ -4,7 +4,7 @@ import hardware.Hardware;
 
 public class tailCtrl {
 
-    private static final int   TAIL_ANGLE_STAND_UP  = 94;   // 完全停止時の角度[度]
+    private static final int   TAIL_ANGLE_STAND_UP  = 93;   // 完全停止時の角度[度]
     private static final int 	TAIL_ANGLE_STOP		= 80;
     private static final int   TAIL_ANGLE_DRIVE     = 3;    // バランス走行時の角度[度]
     private static final float P_GAIN               = 2.5F; // 完全停止用モータ制御比例係数
@@ -47,6 +47,17 @@ public class tailCtrl {
 
 	public static final void tailStart() {
 		float pwm = (float)(TAIL_ANGLE_START - Hardware.motorPortT.getTachoCount()) * S_P_GAIN; // 比例制御
+        // PWM出力飽和処理
+        if (pwm > PWM_ABS_MAX) {
+            pwm = PWM_ABS_MAX;
+        } else if (pwm < -PWM_ABS_MAX) {
+            pwm = -PWM_ABS_MAX;
+        }
+        Hardware.motorPortT.controlMotor((int)pwm, 1);
+	}
+
+	public static void tailRotate(int angle){
+		float pwm = (float)(angle - Hardware.motorPortT.getTachoCount()) * P_GAIN; // 比例制御
         // PWM出力飽和処理
         if (pwm > PWM_ABS_MAX) {
             pwm = PWM_ABS_MAX;

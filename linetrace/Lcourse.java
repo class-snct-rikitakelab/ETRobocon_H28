@@ -10,7 +10,6 @@ import hardware.Hardware;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
-import look_up_gate.GarageSolver;
 import look_up_gate.LookUpGateEvader;
 import look_up_gate.toLUG3;
 import motor_control.tailCtrl;
@@ -27,7 +26,7 @@ public class Lcourse {
 		float distance = 0.0F;
 
 		toLUG3 goToLUG = new toLUG3();
-		GarageSolver garage = new GarageSolver(56,90,30);
+		//GarageSolver garage = new GarageSolver(56,90,30);
 		LookUpGateEvader LUG = new LookUpGateEvader();
 		int count=0;
 
@@ -104,7 +103,7 @@ public class Lcourse {
 						LCD.clear();
 						Sound.beep();
 						LCD.drawString("SolveGarage", 0, 4);
-						garage.SolveGarage();
+						//garage.SolveGarage();
 
 						break;
 
@@ -123,6 +122,7 @@ public class Lcourse {
 	private static void calibration(){
 		BrightTargetKeeper tk = new BrightTargetKeeper();
 		BrightMeasure bright = new BrightMeasure();
+		tailCtrl tail = new tailCtrl();
 
 		boolean flag = false;
 
@@ -180,6 +180,8 @@ public class Lcourse {
 					break;
 				}
 			}
+
+			Delay.msDelay(20);
 		}
 		tk.setStep(bright.measureBrightness());
 		LCD.clear();
