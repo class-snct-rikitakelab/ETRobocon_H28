@@ -20,16 +20,27 @@ public class AreaParamSelecter {
 		new AreaParamKeeper(0.5F,	100.0F,	0.0F,	0.0F,	0.0F,	30.0F)
 		*/
 
+			/*
 		//学校のLコース用
 		new AreaParamKeeper(-10.0F,	2.2F,	40.0F,	0.0F,	300.0F,	100.0F),
-		new AreaParamKeeper(2.2F,	2.3F,	100.0F,	0.0F,	300.0F,	80.0F),
-		new AreaParamKeeper(2.3F,	3.3F,	200.0F,	0.0F,	300.0F,	40.0F),
-		new AreaParamKeeper(2.9F,	4.6F,	40.0F,	0.0F,	300.0F,	100.0F),
-		new AreaParamKeeper(4.6F,	5.3F,	180.0F,	0.0F,	300.0F,	40.0F),
+		new AreaParamKeeper(2.2F,	2.3F,	80.0F,	0.0F,	300.0F,	80.0F),
+		new AreaParamKeeper(2.3F,	3.3F,	150.0F,	0.0F,	150.0F,	40.0F),
+		new AreaParamKeeper(2.9F,	4.6F,	40.0F,	0.0F,	200.0F,	100.0F),
+		new AreaParamKeeper(4.6F,	5.3F,	120.0F,	0.0F,	200.0F,	40.0F),
 		new AreaParamKeeper(5.3F,	6.2F,	60.0F,	0.0F,	300.0F,	100.0F),
 		new AreaParamKeeper(6.2F,	7.95F,	180.0F,	0.0F,	300.0F,	40.0F),
 		new AreaParamKeeper(7.95F,	9.0F,	20.0F,	0.0F,	150.0F,	30.0F),
 		new AreaParamKeeper(9.0F,	80.0F,	0.0F,	0.0F,	300.0F,	100.0F)
+		*/
+
+			new AreaParamKeeper(-10.0F,	2.3F,	40.0F,	0.0F,	300.0F,	100.0F),
+			new AreaParamKeeper(2.3F,	3.3F,	230.0F,	0.0F,	300.0F,	40.0F),
+			new AreaParamKeeper(2.9F,	4.6F,	40.0F,	0.0F,	300.0F,	100.0F),
+			new AreaParamKeeper(4.6F,	5.3F,	180.0F,	0.0F,	300.0F,	40.0F),
+			new AreaParamKeeper(5.3F,	6.2F,	60.0F,	0.0F,	300.0F,	100.0F),
+			new AreaParamKeeper(6.2F,	7.95F,	180.0F,	0.0F,	300.0F,	40.0F),
+			new AreaParamKeeper(7.95F,	9.0F,	40.0F,	0.0F,	300.0F,	30.0F),
+			new AreaParamKeeper(9.0F,	80.0F,	0.0F,	0.0F,	300.0F,	100.0F)
 
 				/*
 		//8/20の試走会のパラメータLコース用

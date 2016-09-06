@@ -10,12 +10,16 @@ import hardware.Hardware;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
+import look_up_gate.GarageSolver;
 import look_up_gate.LookUpGateEvader;
 import look_up_gate.toLUG3;
 import motor_control.tailCtrl;
 import starter.Starter;
 
 public class Lcourse {
+
+	private static float Black_Nansyo;
+	private static float White_Nansyo;
 
 	public static void main(String[] args) {
 		// TODO 自動生成されたメソッド・スタブ
@@ -26,13 +30,20 @@ public class Lcourse {
 		float distance = 0.0F;
 
 		toLUG3 goToLUG = new toLUG3();
-		//GarageSolver garage = new GarageSolver(56,90,30);
+		GarageSolver garage = new GarageSolver(56,30,0.0F,0.0F,0.2F);
 		LookUpGateEvader LUG = new LookUpGateEvader();
 		int count=0;
+
+		start.init();
 
 		Sound.beep();
 
 		calibration();
+
+		LUG.setBlack(Black_Nansyo);
+		LUG.setWhite(White_Nansyo);
+		garage.setBlack(Black_Nansyo);
+		garage.setWhite(White_Nansyo);
 
 		Sound.beep();
 
@@ -103,7 +114,7 @@ public class Lcourse {
 						LCD.clear();
 						Sound.beep();
 						LCD.drawString("SolveGarage", 0, 4);
-						//garage.SolveGarage();
+						garage.SolveGarage();
 
 						break;
 
@@ -139,6 +150,7 @@ public class Lcourse {
 		}
 		tk.setBlack(bright.measureBrightness());
 		LCD.clear();
+		Sound.beep();
 		flag = false;
 
 		LCD.drawString("Detect WHITE", 0, 0);
@@ -154,6 +166,7 @@ public class Lcourse {
 		}
 		tk.setWhite(bright.measureBrightness());
 		LCD.clear();
+		Sound.beep();
 
 		flag = false;
 
@@ -169,9 +182,10 @@ public class Lcourse {
 		}
 		tk.setGray(bright.measureBrightness());
 		LCD.clear();
+		Sound.beep();
 		flag = false;
 
-		LCD.drawString("Detect KAIDAN", 0, 0);
+		LCD.drawString("Detect BLACK in LUG", 0, 0);
 		while(flag == false){
 			if(Hardware.touchSensorIsPressed() == true){
 				flag = true;
@@ -181,9 +195,31 @@ public class Lcourse {
 				}
 			}
 
+			tailCtrl.tailRotate(70);
+
 			Delay.msDelay(20);
 		}
-		tk.setStep(bright.measureBrightness());
+		Black_Nansyo = bright.measureBrightness();
 		LCD.clear();
+		Sound.beep();
+		flag = false;
+
+		LCD.drawString("Detect WHITE in LUG", 0, 0);
+		while(flag == false){
+			if(Hardware.touchSensorIsPressed() == true){
+				flag = true;
+			}else{
+				if(flag == true){
+					break;
+				}
+			}
+
+			tailCtrl.tailRotate(70);
+
+			Delay.msDelay(20);
+		}
+		White_Nansyo = bright.measureBrightness();
+		LCD.clear();
+		Sound.beep();
 	}
 }
