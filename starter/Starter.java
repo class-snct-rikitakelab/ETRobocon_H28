@@ -17,9 +17,6 @@ public class Starter {
 	tailCtrl tail = new tailCtrl();
 
 	public void start(){
-
-		init();
-
 		Timer CommandTimer = new Timer();
 		TimerTask CommandTask = new TimerTask(){
 
@@ -58,7 +55,7 @@ public class Starter {
 		}
 	}
 
-	static void init(){
+	public void init(){
 		LCD.drawString("Please Wait...  ", 0, 4);
 		Hardware.gyro.reset();
 	    Hardware.sonar.enable();
