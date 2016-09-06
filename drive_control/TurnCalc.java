@@ -29,18 +29,19 @@ public class TurnCalc {
 
 	public float calcTurn() {
 
-		//�񐳋K���ł̋P�x�l����
-		/*
+		//Not Normalized
+
 		float bright = bm.measureBrightness();
 
 		currentDiff = bright - btk.getTarget();
-		*/
+
 
 		//���K���ł̋P�x�l����
-
+		/*
 		float bright = bm.measureNormalizedBrightness(btk.getWhite(),btk.getBlack());
 
 		currentDiff = bright - btk.getNormalizedTarget();
+		*/
 
 		float turn = Kp*currentDiff;
 
@@ -53,7 +54,7 @@ public class TurnCalc {
 		//integral += I * ((currentDiff + prevDiff) / 2.0F) *DELTA;
 		//turn += integral;
 
-		return turn*-1;
+		return turn;
 	}
 
 	public void updateParams(float distance){
