@@ -1,18 +1,17 @@
 package linetrace;
 
-import hardware.Hardware;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
+import area_param.DistanceMeasure;
+import drive_control.BrightMeasure;
+import drive_control.BrightTargetKeeper;
+import hardware.Hardware;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import starter.Starter;
 import steps.StepSolver;
-import area_param.DistanceMeasure;
-import drive_control.BrightMeasure;
-import drive_control.BrightTargetKeeper;
 
 public class Rcourse {
 
@@ -27,6 +26,8 @@ public class Rcourse {
 		final DistanceMeasure dm = new DistanceMeasure();
 		StepSolver step = new StepSolver();
 		float distance = 0.0F;
+
+		start.init();
 
 		calibration();
 		BrightTargetKeeper tk = new BrightTargetKeeper();

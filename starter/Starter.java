@@ -1,16 +1,15 @@
 package starter;
 
-import hardware.Hardware;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
+import Balancer.Balancer;
+import hardware.Hardware;
 import lejos.hardware.Battery;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.port.BasicMotorPort;
 import lejos.utility.Delay;
 import motor_control.tailCtrl;
-import Balancer.Balancer;
 
 public class Starter {
 
@@ -18,8 +17,6 @@ public class Starter {
 	tailCtrl tail = new tailCtrl();
 
 	public void start(){
-
-		init();
 
 		Timer CommandTimer = new Timer();
 		TimerTask CommandTask = new TimerTask(){
@@ -55,7 +52,7 @@ public class Starter {
 		}
 	}
 
-	static void init(){
+	public static void init(){
 		LCD.drawString("Please Wait...  ", 0, 4);
 		Hardware.gyro.reset();
 	    Hardware.sonar.enable();
@@ -67,7 +64,12 @@ public class Starter {
 	    // 走行によく使うメソッドについて、HotSpot がネイティブコードに変換するまで空実行する。
 	    // HotSpot が起きるデフォルトの実行回数は 1500。
 	    for (int i=0; i < 1500; i++) {
-	        Hardware.motorPortL.controlMotor(0, 0);
+	        Hardware.motorPortL.controlMotor(0, 1);
+	        Hardware.motorPortR.controlMotor(0, 1);
+	        Hardware.motorPortT.controlMotor(0, 1);
+	        Hardware.motorPortL.getTachoCount();
+	        Hardware.motorPortR.getTachoCount();
+	        Hardware.motorPortT.getTachoCount();
 	        Hardware.getBrightness();
 	        Hardware.getSonarDistance();
 	        Hardware.getGyroValue();
