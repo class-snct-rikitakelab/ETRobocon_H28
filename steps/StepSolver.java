@@ -91,12 +91,17 @@ public class StepSolver {
 	private float turnValue[] = new float[VALUE_STRAIGHT];
 	private char turnPoint  = 0;
 
-	// 経過時間関連
-	private long time4ms;
 	long starttime;
 	private char waitint = 0;
-	private char progress = 0;
 	private float keepRotationDefault = 0;
+	private float prevDiff;
+	private float integral = 0.0F;
+	private static final float Kp = 0.1F;
+	private static final float Ki = 0.000F;
+	private static final float Kd = -0.0F;
+
+
+
 
 	private boolean isEnd = false;
 
@@ -105,8 +110,8 @@ public class StepSolver {
 
 /** テスト用 */
 	public void mani(){
+		LCD.drawString("init", 0, 0);
 		init();
-		LCD.drawString("connect", 0, 0);
 		calibration();
 		LTthreshold = LTnormal = (blackColor+whiteColor)/2;
 		LTgray = (grayColor+whiteColor)/2;
@@ -118,8 +123,9 @@ public class StepSolver {
 			Hardware.motorPortR.controlMotor(0, 1);
 			Hardware.motorPortT.controlMotor(0, 1);
 		}
-		logExc();
+		//logExc();
 		Sound.beep();
+		LCD.drawString("connect", 0, 0);
 		sender.connect();
 		sender.send();
 	}
@@ -137,11 +143,6 @@ public class StepSolver {
 		goCenter();
 		down();
 		toGarage();
-		//以下ログ用 消しても問題ない
-		logExc();
-		Sound.beep();
-		sender.connect();
-		sender.send();
 	}
 
 /** ゴール地点から階段に近づく */
@@ -254,7 +255,7 @@ public class StepSolver {
 						isFirst = false;
 					}
 					//if(GYRO_OFFSET<8&&++counter>10){counter = 0;++GYRO_OFFSET;}
-					if(checkTime(100))GYRO_OFFSET = 10;
+					if(checkTime(500))GYRO_OFFSET = 10;
 					keepRotation();
 					runByBalance();
 					//setLog(i);
@@ -329,10 +330,10 @@ public class StepSolver {
 		Timer driveTimer = new Timer();
 		TimerTask driveTask = new TimerTask() {
 			int i = 0;
-			boolean straightFlag = false;
 			boolean isFirst = true;
 			@Override
 			public void run() {
+				if(i!=0&&Hardware.touchSensorIsPressed()){i = 9;isFirst = true;}
 				switch(i){
 				case 0:
 					if(isFirst){
@@ -341,11 +342,11 @@ public class StepSolver {
 						checkTimeInit();
 						isFirst = false;
 					}
-					if(checkTime(500)){
-						speed = 20;turn = 20;
+					if(checkTime(600)){
+						speed = 10;turn = 10;
 					}
 					runByBalance();
-					if(checkTime(800)){
+					if(checkTime(900)){
 						++i;
 						isFirst = true;
 					}
@@ -359,15 +360,15 @@ public class StepSolver {
 					setTurnByLT();
 					checkBump();
 					runByBalance();
-					if(checkDistance(250)){
+					if(checkDistance(200)){
 						++i;
 						isFirst = true;
 					}
 					break;
 				default:
 					isEnd = true;
-					break;
 				}
+				//setLogGyro();
 			}
 		};
 	driveTimer.scheduleAtFixedRate(driveTask, 0, 4);
@@ -396,6 +397,7 @@ public class StepSolver {
 				case 0://減速しながら進んで向きを合わせる
 					if(isFirst){
 						speed = 25;
+						checkTimeInit();
 						isFirst = false;
 					}
 					setTurnByLT();
@@ -508,12 +510,12 @@ public class StepSolver {
 						checkTimeInit();
 						isFirst = false;
 					}
-					if(checkTime(500)){
+					if(checkTime(900)){
 						speed = 15;
 						turn = 10;
 					}
 					runByBalance();
-					if(checkTime(800)){
+					if(checkTime(1200)){
 						++i;
 						isFirst = true;
 					}
@@ -530,12 +532,13 @@ public class StepSolver {
 						isFirst = true;
 					}
 					break;
-				case 2:// 止まる
+				case 2:// 
 					if(isFirst){
 						speed = 10;
 						checkTimeInit();
 						isFirst = false;
 					}
+					if(checkTime(300)){speed = 10;}
 					//speed = checkDistanceDifference(250) * 0.5f;
 					setTurnByLT();
 					runByBalance();
@@ -562,70 +565,6 @@ public class StepSolver {
 		}
 	}
 
-/** 一回転する  */
-	public void turn(final int angle){
-		isEnd = false;
-		Timer driveTimer = new Timer();
-		TimerTask driveTask = new TimerTask() {
-			int i = 0;
-			boolean isFirst = true;
-			@Override
-			public void run() {
-				switch(i){
-				case 0:
-					if(isFirst){
-						speed =0;
-						turn = 0;
-						checkTimeInit();
-						isFirst = false;
-					}
-					runByBalance();
-					if(checkTime(1000)){
-						++i;
-						isFirst = true;
-					}
-					break;
-				case 1:
-					if(isFirst){
-						speed = 0;
-						if(angle > 0)turn = 30;
-						else turn = -30;
-						checkTurnInit();
-						isFirst = false;
-					}
-					runByBalance();
-					if(checkTurn(angle)){
-						++i;
-						isFirst = true;
-					}
-					break;
-				case 2:
-					if(isFirst){
-						speed = 0;
-						turn = 0;
-						checkTimeInit();
-						isFirst = false;
-					}
-					runByBalance();
-					if(checkTime(1000)){
-						isEnd = true;
-					}
-					break;
-				}
-			}
-		};
-		driveTimer.scheduleAtFixedRate(driveTask, 0, 4);
-		while(true){
-			if(isEnd){
-				driveTask.cancel();
-				isEnd = false;
-				break;
-			}
-			Delay.msDelay(1);
-		}
-
-	}
-
 /** 降りる */
 	public void down(){
 		thetaL = Hardware.motorPortL.getTachoCount();
@@ -639,6 +578,7 @@ public class StepSolver {
 			float turn;
 			int count = 0;
 			int stopcount = 0;
+			int count3 = 0;
 			private Boolean downflag;
 			private DriveTimerTask(Boolean downflag){
 				this.downflag = downflag;
@@ -669,7 +609,7 @@ public class StepSolver {
 				}else{
 					if(Math.abs(gyroNow)<GYRO_LIMIT && downflag == true/* && theta_ave < TACHO_LIMIT */){
 						forward = 50.0F;
-						if(count++<100)turn = -3;//(Hardware.getBrightness() - threshold)*300;
+						if(count++<150)turn = -3;//(Hardware.getBrightness() - threshold)*300;
 						else turn = 0;
 						if(turn >100){
 							turn = 100;
@@ -677,16 +617,21 @@ public class StepSolver {
 						else if(turn < -100){
 							turn = -100;
 						}
-					}else if(Math.abs(gyroNow)>GYRO_LIMIT && downflag == true/* && theta_ave > TACHO_LIMIT */){
+					}else if(Math.abs(gyroNow)>=GYRO_LIMIT && downflag == true/* && theta_ave > TACHO_LIMIT */){
 						forward = 40.0F;
 						turn = 0.0F;
 						downflag = false;
 						down_theta = theta_ave;
-					}else if(downflag == false &&(theta_ave - down_theta < 200 || stopcount < 350)) {
+					}else if(count3 < 10 && (theta_ave - down_theta < 200 || stopcount < 350)) {
 						forward = 40.0F;
 						turn = 0.0F;
 						stopcount++;
-					}else if((theta_ave - down_theta > 200 && stopcount > 350) && bright <0.25F){
+					}else if(count3 < 550){
+						forward = -15.0F;
+						turn = 0.0F;
+						++count3;
+						if(theta_ave - down_theta < 150){count3 = 15000;}
+					}else if(15000 >= count3 && bright <0.25F){
 						forward = 0;
 						turn = 0;
 						stopcount = 2000;
@@ -700,7 +645,8 @@ public class StepSolver {
 						else if(turn < -50){
 							turn = -50;
 						}
-						stopcount++;
+						count3 = 15000;
+						//stopcount++;
 						//logSender.disconnect();
 					}
 				}
@@ -767,36 +713,31 @@ public class StepSolver {
 						turn = 0;
 						checkTimeInit();
 						//LTmultiplier = 70;
-						LTgray = grayColor*0.90f+whiteColor*0.10f;//灰色寄りにする
+						LTgray = grayColor*0.70f+whiteColor*0.30f;//灰色寄りにする
 						blackCount = 0;
 						grayCount = 0;
 						isFirst = false;
 					}// 輝度と距離を両方使う
-					if(checkTime(500))setTurnByLT();
-					if(checkTime(1500)&&checkDistance(50)){
-						blackCount = 0;
-						speed = 20;
-						if(checkDistance(120)){
-							LTthreshold = LTnormal = blackColor*0.30f+grayColor*0.70f;//黒寄りにして誤検知を防ぐ
-							checkGrayGarage();
+					if(checkTime(500)){
+						setTurnByLT();
+						if(checkTime(1000)&&checkDistance(50)){
+							blackCount = 0;
+							speed = 20;
+							if(checkDistance(120)){
+								LTnormal = blackColor*0.30f+grayColor*0.70f;//黒寄りにして誤検知を防ぐ
+								checkGrayGarage();
+							}limitTurn();
+						}else{
+							if(2 < blackCount)counter++;
+							if(counter<2&&turn<5)turn = 5;
 						}
-						limitTurn();
-					}else{
-						if(2 < blackCount)counter++;
-						if(counter<2&&turn<5)turn = 5;
 					}
-					//LTmultiplier = 100;
 					runByBalance();
 					if(150 < grayCount){grayFlag = true;}//灰色検知の基準値 150-200くらい?
 					if(grayFlag&&grayCount < 20){
 						++i;
 						isFirst = true;
-						break;
 					}
-					/*if(checkDistance(6400)){
-						++i;
-						isFirst = true;
-					}*/
 					break;
 				case 2://ガレージ前まで進む
 					if(isFirst){
@@ -854,7 +795,7 @@ public class StepSolver {
 					break;
 				}
 				lastturn = turn;
-				setLog(0);
+				//setLog(0);
 			}
 		};
 		driveTimer.scheduleAtFixedRate(driveTask, 0, 4);
@@ -953,14 +894,14 @@ public class StepSolver {
 
 	/** 目標位置との差を計算する
 	 * @return 目標位置との差
-	 * 目標値より進んでいる場合は正、 後ろの場合は負*/
+	 * 目標値より進んでいる場合は負、 後ろの場合は正*/
 	private float checkDistanceDifference(float target){
 		return (float) (distanceDefault + target - calcDistance());
 	}
 
 	/** 距離リセット */
 	void checkDistanceInit(){
-		distanceDefault = calcDistance() + START_DISTANCE;
+		distanceDefault = calcDistance();
 	}
 
 	private boolean checkTime(int target){
@@ -1018,8 +959,10 @@ public class StepSolver {
 	}
 
 	private boolean checkTurn(int target){
-		if(0 < target)if(target < (calcRotation() - turnDefault))return true;
-		else if((calcRotation() - turnDefault) < target)return true;
+		if(0 < target){
+			if(target < (calcRotation() - turnDefault))return true;}
+		else{
+			if((calcRotation() - turnDefault) < target)return true;}
 		return false;
 	}
 
@@ -1060,7 +1003,7 @@ public class StepSolver {
 			if(40<grayCount){
 				//speed = 15;
 				LTmultiplier = 200;//130
-				if(80<grayCount){
+				if(150<grayCount){
 					LTthreshold = LTgray;
 					if(120<grayCount)LTmultiplier = 100;
 					if((grayColor*0.90f+blackColor*0.10<bright) && (bright<grayColor*0.60+whiteColor*0.40))++grayCount;
@@ -1073,6 +1016,7 @@ public class StepSolver {
 			}
 			else{
 				if((grayColor*0.90f+blackColor*0.10<bright) && (bright<grayColor*0.80+whiteColor*0.20))++grayCount;
+				LTthreshold = LTnormal;
 			}
 		}
 		else if(bright <= grayColor*0.80f+blackColor*0.20){
@@ -1080,12 +1024,37 @@ public class StepSolver {
 			LTthreshold = LTnormal;
 			LTmultiplier = 100;//70
 		}else{
-			if(grayFlag&&0<grayCount) // !grayFlag&&
-			//grayCount/=1.08;
-			grayCount -= 2;
-			LTthreshold = LTnormal;
-			LTmultiplier = 100;
+			if(!grayFlag){ // !grayFlag&&
+				if(0<grayCount)grayCount -= 2; //grayCount/=1.08;
+				LTthreshold = LTnormal;
+				LTmultiplier = 100;
+			}
 		}
+	}
+
+	private int gyroStopCounter = 0;
+	private int pwmStopCounter = 0;
+	private int tachoStopCounter = 0;
+	private boolean checkStability(){
+		if(Math.abs(Hardware.getGyroValue())<3)gyroStopCounter++;
+		else gyroStopCounter /= 1.2;
+		if(Math.abs(Balancer.getPwmL()+Balancer.getPwmR())<5)pwmStopCounter++;
+		else pwmStopCounter /= 1.2;
+		for(int i = 5;i > 0;--i){
+			tachoBumpL[i] = tachoBumpL[i-1];
+			tachoBumpR[i] = tachoBumpR[i-1];
+		}
+		tachoBumpL[0] = Hardware.motorPortL.getTachoCount();
+		tachoBumpR[0] = Hardware.motorPortR.getTachoCount();
+		if(Math.abs(tachoBumpL[5]-tachoBumpL[0])<2 && Math.abs(tachoBumpR[5]-tachoBumpR[0])<2)tachoStopCounter++;
+		else tachoStopCounter /= 1.1;
+		if(15<gyroStopCounter && 15<pwmStopCounter && 30<tachoStopCounter)return true;
+		else return false;
+	}
+	private void checkStabilityInit(){
+		gyroStopCounter = 0;
+		pwmStopCounter = 0;
+		tachoStopCounter = 0;
 	}
 
 	private void keepRotation(){
@@ -1095,6 +1064,18 @@ public class StepSolver {
 	private void keepRotationInit(){
 		keepRotationDefault = (float)calcRotation();
 	}
+
+	private void keepPos(float distance){
+		float currentDiff = checkDistanceDifference(distance);
+		speed = Kp*currentDiff;
+
+		integral += Ki * (currentDiff + prevDiff);
+		speed += integral;
+
+		speed += Kd*(currentDiff - prevDiff);
+		prevDiff = currentDiff;
+	}
+
 
 	private void limitTurn(){
 		if(turn < lastturn-5){turn = lastturn - 5;}
@@ -1167,10 +1148,10 @@ public class StepSolver {
 		return bright.measureBrightness();
 	}
 
-	private int lastEnc = 0;
+/*	private int lastEnc = 0;
 
-	private float lastbright[] = new float[2500];
-	private float lastgray[] = new float[2500];
+	private float lastbright[] = new float[1500];
+	private float lastgray[] = new float[1500];
 	private int nowbrightnumber = 0;
 	private void setLog(int i){
 		if(2499<nowbrightnumber)return;
@@ -1181,11 +1162,24 @@ public class StepSolver {
 			waitint = 0;
 		}
 	}
+	private float lastgyro[] = new float[1500];
+	private int nowgyronumber = 0;
+	private void setLogGyro(){
+		if(1499<nowgyronumber)return;
+		if(++waitint == 5){
+			lastgyro[nowgyronumber] = Hardware.getGyroValue();
+			++nowgyronumber;
+			waitint = 0;
+		}
+	}
 	private void logExc(){
 		for(int i = 0;i < nowbrightnumber;++i){
-			sender.addLog("B", lastbright[i], i/50f);
+			sender.addLog("Bright", lastbright[i], i/50f);
 			//sender.addLog("LB",lastbright[i]-lastbright[i-1], i/50f);
-			sender.addLog("G", lastgray[i], i/50f);
+			sender.addLog("Gray", lastgray[i], i/50f);
+		}
+		for(int i = 0;i < nowgyronumber;++i){
+			sender.addLog("Gyro", lastgyro[i], i/50f);
 		}
 	}//*/
 }
