@@ -9,6 +9,7 @@ public class GyroSensor {
 
 	public GyroSensor(SensorMode gyro){
 		this.gyro = gyro;
+		sampleGyro = new float[gyro.sampleSize()];
 	}
 
 	public float getGyroValue(){

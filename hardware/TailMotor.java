@@ -25,4 +25,15 @@ public class TailMotor {
         }
         tail.controlMotor((int)pwm, 1);
 	}
+
+	public void controlMotor(int angle, float PGain){
+		float pwm = (float)(angle - tail.getTachoCount()) * PGain; // 比例制御
+        // PWM出力飽和処理
+        if (pwm > PWM_ABS_MAX) {
+            pwm = PWM_ABS_MAX;
+        } else if (pwm < -PWM_ABS_MAX) {
+            pwm = -PWM_ABS_MAX;
+        }
+        tail.controlMotor((int)pwm, 1);
+	}
 }
