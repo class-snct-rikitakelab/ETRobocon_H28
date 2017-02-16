@@ -34,7 +34,7 @@ public class Calibrater {
 			}
 			Delay.msDelay(100);
 		}
-		target[0] = bright.getBrightValue();
+		target[0] = bright.getBright();
 		LCD.clear();
 		flag = false;
 
@@ -50,7 +50,7 @@ public class Calibrater {
 			}
 			Delay.msDelay(100);
 		}
-		target[1] = bright.getBrightValue();
+		target[1] = bright.getBright();
 		LCD.clear();
 		flag = false;
 
@@ -65,7 +65,7 @@ public class Calibrater {
 			}
 			Delay.msDelay(100);
 		}
-		target[2] = bright.getBrightValue();
+		target[2] = bright.getBright();
 		LCD.clear();
 		flag = false;
 	}
