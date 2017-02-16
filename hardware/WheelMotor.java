@@ -21,4 +21,12 @@ public class WheelMotor {
 		right.controlMotor(rightPWM, 1);
 	}
 
+	public int getTachoR(){
+		return right.getTachoCount();
+	}
+
+	public int getTachoL(){
+		return left.getTachoCount();
+	}
+
 }
