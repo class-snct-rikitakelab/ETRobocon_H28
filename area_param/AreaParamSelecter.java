@@ -1,8 +1,12 @@
 package area_param;
 
+import hardware.WheelMotor;
+
 public class AreaParamSelecter {
 
-	private DistanceMeasure dm = new DistanceMeasure();
+	WheelMotor wheel;
+
+	private DistanceMeasure dm;
 
 	public int i = 0;
 	public float dis = 0.0F;
@@ -71,6 +75,11 @@ public class AreaParamSelecter {
 
 	}
 */
+	public AreaParamSelecter(WheelMotor wheel){
+		this.wheel = wheel;
+		dm = new DistanceMeasure(this.wheel);
+	}
+
 	public AreaParamKeeper getParams(){
 
 		dis = dm.measureDistance_Meter();
@@ -117,35 +126,6 @@ public class AreaParamSelecter {
 		}
 
 		return 0.0F;
-	}
-
-	private float measureDistance_Degree(){
-
-		float rotate = hardware.Hardware.motorPortL.getTachoCount() + hardware.Hardware.motorPortR.getTachoCount();
-
-		rotate = rotate / 2.0F;
-
-		return rotate;
-	}
-
-	private float measureDistance_Meter(){
-
-		float rotate = hardware.Hardware.motorPortL.getTachoCount() + hardware.Hardware.motorPortR.getTachoCount();
-
-		rotate = rotate / 2.0F;
-
-		return (rotate / 360.0F) * 0.262F;
-
-	}
-
-	private float measureDistance_CMeter(){
-
-		float rotate = hardware.Hardware.motorPortL.getTachoCount() + hardware.Hardware.motorPortR.getTachoCount();
-
-		rotate = rotate / 2.0F;
-
-		return (rotate / 360.0F) * 26.2F;
-
 	}
 
 }
