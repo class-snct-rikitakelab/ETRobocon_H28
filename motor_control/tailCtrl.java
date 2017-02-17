@@ -28,4 +28,8 @@ public class tailCtrl {
 		tail.controlMotor(TAIL_ANGLE_START,S_P_GAIN);
 	}
 
+	public int getTailAngle(){
+		return tail.getTailAngle();
+	}
+
 }
