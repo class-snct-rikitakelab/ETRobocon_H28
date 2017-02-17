@@ -13,12 +13,12 @@ public class Calibrater {
 
 	private float[] target = new float[3];
 
-	public void calibration(BrightSensor bright, TouchSensor touch) {
+	public Calibrater(BrightSensor bright, TouchSensor touch){
 		this.bright = bright;
 		this.touch = touch;
 	}
 
-	public void ScanCalibration(){
+	public void calibration(){
 		boolean flag = false;
 
 		LCD.clear();
