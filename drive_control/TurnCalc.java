@@ -2,6 +2,8 @@ package drive_control;
 
 import area_param.AreaParamKeeper;
 import area_param.AreaParamSelecter;
+import hardware.BrightSensor;
+import hardware.WheelMotor;
 
 public class TurnCalc {
 
@@ -15,10 +17,10 @@ public class TurnCalc {
 
 	private float Kp,Ki,Kd;
 
-	public TurnCalc(){
-		bm = new BrightMeasure();
+	public TurnCalc(BrightSensor bright, WheelMotor wheel){
+		bm = new BrightMeasure(bright);
 		btk = new BrightTargetKeeper();
-		aps = new AreaParamSelecter();
+		aps = new AreaParamSelecter(wheel);
 
 		currentDiff = bm.measureBrightness() - btk.getTarget();
 		prevDiff = currentDiff;
@@ -29,15 +31,15 @@ public class TurnCalc {
 
 	public float calcTurn() {
 
-		//”ñ³‹K‰»‚Å‚Ì‹P“x’lˆ—
+		//ï¿½ñ³‹Kï¿½ï¿½ï¿½Å‚Ì‹Pï¿½xï¿½lï¿½ï¿½ï¿½ï¿½
 		float bright = bm.measureBrightness();
 
 		currentDiff = bright - btk.getTarget();
 
-		//³‹K‰»‚Å‚Ì‹P“x’lˆ—
+		//ï¿½ï¿½ï¿½Kï¿½ï¿½ï¿½Å‚Ì‹Pï¿½xï¿½lï¿½ï¿½ï¿½ï¿½
 		/*
 		float bright = bm.measureNormalizedBrightness(btk.getWhite(),btk.getBlack);
-		
+
 		currentDiff = bright - btk.getNormalizedTarget();
 		*/
 		float turn = Kp*currentDiff;
