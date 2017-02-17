@@ -15,6 +15,10 @@ public class TailMotor {
 		tail.setPWMMode(BasicMotorPort.PWM_BRAKE);
 	}
 
+	public int getTailAngle(){
+		return tail.getTachoCount();
+	}
+
 	public void controlMotor(int angle){
 		float pwm = (float)(angle - tail.getTachoCount()) * P_GAIN; // 比例制御
         // PWM出力飽和処理
