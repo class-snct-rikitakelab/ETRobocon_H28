@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import hardware.Hardware;
+import hardware.TouchSensor;
 
 public class StartCommandDetecter{
 
@@ -19,8 +19,10 @@ public class StartCommandDetecter{
     private static DataInputStream dataInputStream = null;
     private static int             remoteCommand = 0;
 
-	public StartCommandDetecter(){
+    private TouchSensor touch;
 
+	public StartCommandDetecter(TouchSensor touch){
+		this.touch = touch;
 	}
 
 	public void esta(){
@@ -47,7 +49,7 @@ public class StartCommandDetecter{
 
 	public boolean checkCommand(){
 
-		if(Hardware.touchSensorIsPressed() == true){
+		if(touch.touchSensorIsPressed() == true){
 			return true;
 		}
 

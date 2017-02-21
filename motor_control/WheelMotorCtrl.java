@@ -1,16 +1,21 @@
 package motor_control;
 
-import hardware.Hardware;
+import hardware.GyroSensor;
+import hardware.WheelMotor;
 import lejos.hardware.Battery;
 
 public class WheelMotorCtrl {
 
+	WheelMotor wheel;
+	GyroSensor gyro;
 	private float forward;
 	private float turn;
 
-	public WheelMotorCtrl(){
+	public WheelMotorCtrl(WheelMotor wheel, GyroSensor gyro){
 		forward = 0.0F;
 		turn = 0.0F;
+		this.wheel = wheel;
+		this.gyro = gyro;
 	}
 
 	public void setTurn(float turn) {
@@ -23,13 +28,8 @@ public class WheelMotorCtrl {
 
 	public void controlWheel() {
 
-		float[] gyrovalue = new float [Hardware.gyro.sampleSize()];
-		Hardware.gyro.fetchSample(gyrovalue, 0);
-
-		Balancer.Balancer.control(forward, turn, -gyrovalue[0], 0.0F, Hardware.motorPortL.getTachoCount(), Hardware.motorPortR.getTachoCount(), Battery.getVoltageMilliVolt());
-
-		Hardware.motorPortL.controlMotor(Balancer.Balancer.getPwmL(), 1);
-		Hardware.motorPortR.controlMotor(Balancer.Balancer.getPwmR(), 1);
+		Balancer.Balancer.control(forward, turn, gyro.getGyroValue() * (-1), 0.0F, wheel.getTachoL(), wheel.getTachoR(), Battery.getVoltageMilliVolt());
+		wheel.controlWheel(Balancer.Balancer.getPwmL(),Balancer.Balancer.getPwmR());
 
 	}
 

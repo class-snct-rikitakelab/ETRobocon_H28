@@ -1,10 +1,19 @@
 package area_param;
 
+import hardware.WheelMotor;
+
 public class DistanceMeasure {
+
+	WheelMotor wheel;
+
+	public DistanceMeasure(WheelMotor wheel){
+		this.wheel = wheel;
+
+	}
 
 	public float measureDistance_Degree(){
 
-		float rotate = hardware.Hardware.motorPortL.getTachoCount() + hardware.Hardware.motorPortR.getTachoCount();
+		float rotate = wheel.getTachoL()+wheel.getTachoR();
 
 		rotate = rotate / 2.0F;
 
@@ -13,7 +22,7 @@ public class DistanceMeasure {
 
 	public float measureDistance_Meter(){
 
-		float rotate = hardware.Hardware.motorPortL.getTachoCount() + hardware.Hardware.motorPortR.getTachoCount();
+		float rotate = wheel.getTachoL()+wheel.getTachoR();
 
 		rotate = rotate / 2.0F;
 
@@ -23,7 +32,7 @@ public class DistanceMeasure {
 
 	public float measureDistance_CMeter(){
 
-		float rotate = hardware.Hardware.motorPortL.getTachoCount() + hardware.Hardware.motorPortR.getTachoCount();
+		float rotate = wheel.getTachoL()+wheel.getTachoR();
 
 		rotate = rotate / 2.0F;
 

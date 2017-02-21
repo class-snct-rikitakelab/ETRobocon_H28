@@ -1,22 +1,28 @@
 package drive_control;
 
-import hardware.Hardware;
+import hardware.BrightSensor;
 
 public class BrightMeasure {
+
+	BrightSensor bright;
+
+	public BrightMeasure(BrightSensor bright){
+		this.bright = bright;
+	}
 	public float measureBrightness() {
 
-		return Hardware.getBrightness();
+		return bright.getBright();
 	}
-	
-	public float measureNormalizedBrightness(float White,float Black) { 
-		//ˆø”:”’‚¨‚æ‚Ñ•‚Ì‹P“x’lŠî€
+
+	public float measureNormalizedBrightness(float White,float Black) {
+		//ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñï¿½ï¿½Ì‹Pï¿½xï¿½lï¿½î€
 		float brightness;
-		brightness = Hardware.getBrightness();
+		brightness = bright.getBright();
 		if(White != Black){
-			return (White - brightness)/(White - Black);	//”’‚ğ1A•‚ğ0‚Æ‚µ‚Ä³‹K‰»
+			return (White - brightness)/(White - Black);	//ï¿½ï¿½ï¿½ï¿½1ï¿½Aï¿½ï¿½ï¿½ï¿½0ï¿½Æ‚ï¿½ï¿½Äï¿½ï¿½Kï¿½ï¿½
 		}
 		else{
-			return 0.5F;//‚OœZ‚É‚È‚éê‡‚ğœŠOBƒ‰ƒCƒ“ã‚É‚¢‚é‚à‚Ì‚Æ‚·‚é
+			return 0.5F;//ï¿½Oï¿½ï¿½ï¿½Zï¿½É‚È‚ï¿½ê‡ï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½Bï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚Æ‚ï¿½ï¿½ï¿½
 		}
 	}
 }

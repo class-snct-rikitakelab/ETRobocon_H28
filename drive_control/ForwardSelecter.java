@@ -1,6 +1,7 @@
 package drive_control;
 
 import area_param.AreaParamSelecter;
+import hardware.WheelMotor;
 
 public class ForwardSelecter {
 
@@ -8,8 +9,8 @@ public class ForwardSelecter {
 
 	private float forward;
 
-	public ForwardSelecter(){
-		aps = new AreaParamSelecter();
+	public ForwardSelecter(WheelMotor wheel){
+		aps = new AreaParamSelecter(wheel);
 		forward = 0.0F;
 	}
 

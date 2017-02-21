@@ -1,47 +1,35 @@
 package motor_control;
 
-import hardware.Hardware;
+import hardware.TailMotor;
 
 public class tailCtrl {
 
     private static final int   TAIL_ANGLE_STAND_UP  = 92;   // 完全停止時の角度[度]
     private static final int   TAIL_ANGLE_DRIVE     = 3;    // バランス走行時の角度[度]
-    private static final float P_GAIN               = 2.5F; // 完全停止用モータ制御比例係数
-    private static final int   PWM_ABS_MAX          = 60;   // 完全停止用モータ制御PWM絶対最大値
     private static final int   TAIL_ANGLE_START     = 97;   // スタート時の前傾の目標角度
     private static final float S_P_GAIN             = 10.0F;// スタート時のモータ制御比例係数
 
-	public static final void tailTwo() {
-        float pwm = (float)(TAIL_ANGLE_DRIVE - Hardware.motorPortT.getTachoCount()) * P_GAIN; // 比例制御
-        // PWM出力飽和処理
-        if (pwm > PWM_ABS_MAX) {
-            pwm = PWM_ABS_MAX;
-        } else if (pwm < -PWM_ABS_MAX) {
-            pwm = -PWM_ABS_MAX;
-        }
-        Hardware.motorPortT.controlMotor((int)pwm, 1);
+    TailMotor tail;
+
+    public tailCtrl(TailMotor tail){
+    	this.tail = tail;
     }
 
-	public static final void tailThree() {
-        float pwm = (float)(TAIL_ANGLE_STAND_UP - Hardware.motorPortT.getTachoCount()) * P_GAIN; // 比例制御
-        // PWM出力飽和処理
-        if (pwm > PWM_ABS_MAX) {
-            pwm = PWM_ABS_MAX;
-        } else if (pwm < -PWM_ABS_MAX) {
-            pwm = -PWM_ABS_MAX;
-        }
-        Hardware.motorPortT.controlMotor((int)pwm, 1);
+	public void tailTwo() {
+		tail.controlMotor(TAIL_ANGLE_DRIVE);
     }
 
-	public static final void tailStart() {
-		float pwm = (float)(TAIL_ANGLE_START - Hardware.motorPortT.getTachoCount()) * S_P_GAIN; // 比例制御
-        // PWM出力飽和処理
-        if (pwm > PWM_ABS_MAX) {
-            pwm = PWM_ABS_MAX;
-        } else if (pwm < -PWM_ABS_MAX) {
-            pwm = -PWM_ABS_MAX;
-        }
-        Hardware.motorPortT.controlMotor((int)pwm, 1);
+	public void tailThree() {
+		tail.controlMotor(TAIL_ANGLE_STAND_UP);
+    }
+
+	public void tailStart() {
+
+		tail.controlMotor(TAIL_ANGLE_START,S_P_GAIN);
+	}
+
+	public int getTailAngle(){
+		return tail.getTailAngle();
 	}
 
 }
