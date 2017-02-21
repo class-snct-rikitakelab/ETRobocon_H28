@@ -55,7 +55,7 @@ public class TestLineTrace {
         EV3GyroSensor gyroSensor = new EV3GyroSensor(SensorPort.S4);
         SampleProvider rate = gyroSensor.getRateMode();          // 角速度検出モード
 
-        WheelMotor wheel = new WheelMotor(motorPortR, motorPortR);
+        WheelMotor wheel = new WheelMotor(motorPortL, motorPortR);
         TailMotor tail = new TailMotor(motorPortT);
         GyroSensor gyro = new GyroSensor(rate);
         BrightSensor bright = new BrightSensor(redMode);
@@ -70,13 +70,20 @@ public class TestLineTrace {
 		Calibrater calib = new Calibrater(bright, touch);
 		float distance = 0.0F;
 
+		Sound.beep();
 		calib.calibration();
 		tk.setBlack(calib.getTargets()[0]);
 		tk.setWhite(calib.getTargets()[1]);
 		tk.setGray(calib.getTargets()[2]);
 		Sound.beep();
 
-		start.start();
+		ultrasonicSensor.enable();
+		motorPortL.resetTachoCount();
+		motorPortR.resetTachoCount();
+		motorPortT.resetTachoCount();
+		gyroSensor.reset();
+		start.start(wheel, tail, bright, sonar, gyro, touch);
+
 
 		//Sound.beep();
 
@@ -91,22 +98,23 @@ public class TestLineTrace {
 		};
 
 		//下のタイマは走行距離測定して，PID係数と速度を切り替えている。周期は100ms
-		Timer distanceTimer = new Timer();
-		DistanceTask distancetask = new DistanceTask(lt,dm,distance);
+		//Timer distanceTimer = new Timer();
+		//DistanceTask distancetask = new DistanceTask(lt,dm,distance);
 
 
 		driveTimer.scheduleAtFixedRate(driveTask, 0, 4);
-		distanceTimer.scheduleAtFixedRate(distancetask, 0, 100);
+		//distanceTimer.scheduleAtFixedRate(distancetask, 0, 100);
 
 		//一定距離走るとループから抜ける
 		while(true){
-			distance = distancetask.getDistance();
+			//distance = distancetask.getDistance();
 
-			if(distance > 8.0F){
+			/*
+			if(distance > 2.0F){
 				driveTimer.cancel();
-				distanceTimer.cancel();
+				//distanceTimer.cancel();
 				break;
-			}
+			}*/
 
 			Delay.msDelay(20);
 		}
